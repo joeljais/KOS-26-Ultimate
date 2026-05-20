@@ -1,0 +1,234 @@
+/* ══════════════════════════════════════════════════════════════
+   KOS ULTIMATE 2026 — apps/release-notes.js
+   Release Notes — a clean, scrollable changelog viewer.
+
+   HOW TO ADD A NEW VERSION:
+   ─ Add a NEW object at the TOP of the RELEASES array below.
+   ─ Each entry has: version, date, tag (e.g. 'Major'), and
+     a sections array of { title, items[] } groups.
+   ─ The first entry in RELEASES is always shown as "Latest".
+   ─ That is literally all you need to do. ✓
+   ══════════════════════════════════════════════════════════════ */
+
+window.KOSApps = window.KOSApps || {};
+
+/* ══════════════════════════════════════════════════════════════
+   ✏️  EDIT THIS BLOCK — add a new object at the TOP for each
+   new release. Older entries stay below automatically.
+   ══════════════════════════════════════════════════════════════ */
+const RELEASES = [
+
+  /* ── Latest release — always first ── */
+  {
+    version:  'Alpha 6',
+    date:     'April 3, 2026',
+    tag:      'Alpha Release',
+    tagColor: 'orange',
+    sections: [
+      {
+        title: '🚀 New Features',
+        items: [
+          ,
+          'Added App named Files which users can now upload audio video and txt according to the folder ',
+          'Added App named Notes where users can now create and edit uploaded txt files',
+  
+          ,
+        ],
+      },
+     
+    ],
+  },
+
+  /* ── Previous release ── */
+
+  {
+    version:  'Alpha 5',
+    date:     'April 2, 2026',
+    tag:      'Alpha Release',
+    tagColor: 'orange',
+    sections: [
+      {
+        title: '🚀 New Features',
+        items: [
+          'Added right click menu with custom menus on different areas',
+          'Added App named Release Notes',
+          'Added App named About KOS',
+          'apps not in dock now appears in dock when the app is opened',
+          ,
+        ],
+      },
+      {
+        title: '✨ Improvements',
+        items: [
+          'Now users can see the release notes in the os',
+          'Now users can see the KOS Software information in the os',
+          
+        ],
+      },
+      {
+        title: '🐛 Bug Fixes',
+        items: [
+         'Fixed bug in spotlight that goes below screen so that user cannot see the apps',
+        ],
+      },
+    ],
+  },
+  {
+    version:  'Alpha 4 Restructure',
+    date:     'april 1, 2025',
+    tag:      'Code optimisation',
+    tagColor: 'green',
+    sections: [
+      {
+        title: '✨ Improvements',
+        items: [
+          'Complete code for the OS is rewritten for more os stability and better feature/app integrations',
+          'Better ui enhancements for topnav  With smooth animations',
+          
+        ],
+      },
+    ],
+  },
+
+  {
+    version:  'Alpha 4',
+    date:     'March 30, 2026',
+    tag:      'Feature Update',
+    tagColor: 'orange',
+    sections: [
+      {
+        title: '🚀 New Features',
+        items: [
+          'New app called calculator',
+          
+          
+        ],
+      },
+      {
+        title: '🐛 Bug Fixes',
+        items: [
+         'Fixed bug of duplicate icons in dock',
+        ],
+      },
+    ],
+  },
+
+ {
+    version:  'Alpha 3',
+    date:     'March 30, 2026',
+    tag:      'Feature Update',
+    tagColor: 'orange',
+    sections: [
+      {
+        title: '🚀 New Features',
+        items: [
+          'New app called KOS Studio for making custom apps for users',
+        
+        ],
+      },
+      
+    ],
+  },
+  {
+    version:  'Alpha 2',
+    date:     'March 29, 2026',
+    tag:      'Feature Update',
+    tagColor: 'orange',
+    sections: [
+      {
+        title: '🚀 New Features',
+        items: [
+          'New app called photos with ability to set wallpaper inside the app',
+          'New app called browser to search web',
+          
+        ],
+      },
+     {
+        title: '🐛 Bug Fixes',
+        items: [
+         'Fixed the bootlooping issue in Alpha 1',
+        ],
+      },
+    ],
+  },
+  {
+    version:  'Alpha 1',
+    date:     'March 28, 2026',
+    tag:      'First Update',
+    tagColor: 'purple',
+    sections: [
+      {
+        title: '🚀 New Features',
+        items: [
+          'Fresh new ui for KOS',
+          'Complete code rewritten',
+          ,
+        ],
+      },
+     
+    ],
+  },
+];
+/* ══════════════════════════════════════════════════════════════ */
+
+window.KOSApps.releasenotes = {
+  init() {
+    const body = document.querySelector('.rn-body') || document.getElementById('rn-body');
+    if (!body) return;
+
+    const [latest, ...older] = RELEASES;
+
+    let html = `
+      <!-- ── Header ── -->
+      <div class="rn-header">
+        <div class="rn-header-icon"><i class="fa-solid fa-newspaper"></i></div>
+        <div>
+          <h1 class="rn-main-title">Release Notes</h1>
+          <p  class="rn-main-sub">KOS Ultimate · What's changed</p>
+        </div>
+      </div>
+
+      <!-- ── Latest version card ── -->
+      <div class="rn-latest-card">
+        <div class="rn-ver-row">
+          <span class="rn-version-badge">v${latest.version}</span>
+          <span class="rn-tag rn-tag-${latest.tagColor}">${latest.tag}</span>
+          <span class="rn-date">${latest.date}</span>
+        </div>
+        ${_rnSections(latest.sections)}
+      </div>
+    `;
+
+    if (older.length > 0) {
+      html += `<div class="rn-older-label">Previous Releases</div>`;
+      older.forEach(rel => {
+        html += `
+          <div class="rn-older-card">
+            <div class="rn-ver-row">
+              <span class="rn-version-badge rn-version-small">v${rel.version}</span>
+              <span class="rn-tag rn-tag-${rel.tagColor}">${rel.tag}</span>
+              <span class="rn-date">${rel.date}</span>
+            </div>
+            ${_rnSections(rel.sections)}
+          </div>`;
+      });
+    }
+
+    body.innerHTML = html;
+  },
+};
+
+/* ── Renders section groups (title + bullet list) ── */
+function _rnSections(sections) {
+  return sections.map(sec => `
+    <div class="rn-section">
+      <h3 class="rn-section-title">${sec.title}</h3>
+      <ul class="rn-list">
+        ${sec.items.map(item => `<li class="rn-item">${item}</li>`).join('')}
+      </ul>
+    </div>
+  `).join('');
+}
+
+/* Register init hook with WM */
+WM.setOnOpen('releasenotes', () => window.KOSApps.releasenotes.init());

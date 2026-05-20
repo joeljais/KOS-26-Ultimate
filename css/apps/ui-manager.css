@@ -1,0 +1,66 @@
+/* ══════════════════════════════════════════════════════════════
+   KOS ULTIMATE 2026 — css/apps/ui-manager.css
+   All UI Manager styles.
+   ══════════════════════════════════════════════════════════════ */
+
+.uim-section h3 {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: #888; margin-bottom: 14px;
+}
+.setting-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; border-radius: 12px; background: rgba(0,0,0,0.04);
+}
+.setting-row span { font-size: 0.9rem; font-weight: 500; color: #333; }
+
+/* Toggle switch */
+.toggle-switch { width: 42px; height: 24px; border-radius: 999px; background: #ccc; position: relative; cursor: pointer; transition: background 0.25s; flex-shrink: 0; }
+.toggle-switch.on { background: #34c759; }
+.toggle-knob { position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3); transition: transform 0.25s var(--ease-spring); }
+.toggle-switch.on .toggle-knob { transform: translateX(18px); }
+
+/* Avatar section */
+.uim-avatar-row { display: flex; align-items: center; gap: 16px; }
+.uim-avatar-preview { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(0,0,0,0.1); }
+.upload-btn {
+  padding: 7px 14px; border-radius: 10px; font-size: 0.82rem; font-weight: 500;
+  border: 1px solid rgba(0,0,0,0.15); background: rgba(255,255,255,0.8); color: #333; cursor: pointer;
+  display: flex; align-items: center; gap: 6px; transition: background 0.2s, transform 0.15s;
+}
+.upload-btn:hover { background: #fff; transform: scale(1.03); }
+
+.avatar-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 8px; }
+.av-thumb { width: 44px; height: 44px; border-radius: 50%; overflow: hidden; cursor: pointer; position: relative; border: 2.5px solid transparent; transition: border-color 0.2s, transform 0.2s var(--ease-spring); }
+.av-thumb:hover { transform: scale(1.1); }
+.av-thumb.selected { border-color: #007aff; }
+.av-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.av-delete { position: absolute; inset: 0; border-radius: 50%; background: rgba(0,0,0,0.55); border: none; cursor: pointer; color: #fff; font-size: 0.7rem; display: none; align-items: center; justify-content: center; }
+.av-thumb:hover .av-delete { display: flex; }
+
+/* Wallpaper grid */
+.wallpaper-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+.wp-swatch { aspect-ratio: 16/9; border-radius: 10px; cursor: pointer; border: 2.5px solid transparent; transition: transform 0.2s var(--ease-spring), border-color 0.2s; position: relative; overflow: hidden; }
+.wp-swatch:hover { transform: scale(1.06); }
+.wp-swatch.selected { border-color: #007aff; }
+.wp-swatch.selected::after { content: '✓'; position: absolute; bottom: 4px; right: 6px; font-size: 0.75rem; color: #fff; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+
+.wp-custom-thumb { aspect-ratio: 16/9; border-radius: 10px; cursor: pointer; border: 2.5px solid transparent; position: relative; overflow: hidden; transition: transform 0.2s var(--ease-spring), border-color 0.2s; }
+.wp-custom-thumb:hover { transform: scale(1.06); }
+.wp-custom-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.wp-custom-thumb.selected { border-color: #007aff; }
+.wp-custom-thumb.selected::after { content: '✓'; position: absolute; bottom: 4px; right: 6px; font-size: 0.75rem; color: #fff; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+.wp-delete-btn { position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; border-radius: 50%; background: rgba(255,59,48,0.85); border: none; cursor: pointer; color: #fff; font-size: 0.6rem; display: none; align-items: center; justify-content: center; z-index: 2; }
+.wp-custom-thumb:hover .wp-delete-btn { display: flex; }
+.wp-upload-tile { aspect-ratio: 16/9; border-radius: 10px; cursor: pointer; border: 2px dashed rgba(0,0,0,0.2); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 0.72rem; color: #888; font-weight: 500; transition: background 0.2s, transform 0.2s var(--ease-spring); }
+.wp-upload-tile:hover { background: rgba(0,0,0,0.05); transform: scale(1.04); }
+.wp-upload-tile i { font-size: 1.2rem; color: #aaa; }
+
+/* Dark mode */
+body.dark .setting-row    { background: rgba(255,255,255,0.06); }
+body.dark .setting-row span { color: #e0e0e0; }
+body.dark .uim-section h3 { color: #666; }
+body.dark .upload-btn     { background: rgba(255,255,255,0.1); color: #e0e0e0; border-color: rgba(255,255,255,0.15); }
+body.dark .upload-btn:hover { background: rgba(255,255,255,0.18); }
+body.dark .wp-upload-tile { border-color: rgba(255,255,255,0.2); color: #666; }
+body.dark .wp-upload-tile i { color: #555; }
+body.dark .wp-upload-tile:hover { background: rgba(255,255,255,0.06); }

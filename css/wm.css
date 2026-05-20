@@ -1,0 +1,235 @@
+/* ══════════════════════════════════════════════════════════════
+   KOS ULTIMATE 2026 — css/wm.css
+   Floating window system styles. To add/change a window feature,
+   only edit this file alongside kos-wm.js.
+   ══════════════════════════════════════════════════════════════ */
+
+/* ═══ FLOATING WINDOW ═══ */
+.kos-window {
+  position: fixed; display: flex; flex-direction: column;
+  border-radius: 14px; overflow: hidden; z-index: 500;
+  opacity: 0; pointer-events: none;
+  transform: scale(0.94) translateY(16px);
+  transition: opacity 0.28s ease, transform 0.32s var(--ease-spring),
+              border-radius 0.42s ease;
+}
+.kos-window.win-open {
+  opacity: 1; pointer-events: all; transform: scale(1) translateY(0);
+  /* will-change removed: permanent promotion wastes a GPU layer per window.
+     Applied transiently by JS during drag/resize only. */
+  contain: layout style;
+}
+.kos-window.win-minimized {
+  opacity: 0 !important; pointer-events: none !important;
+  transform: scale(0.5) translateY(200%) !important;
+  transition: opacity 0.22s ease, transform 0.28s var(--ease-spring) !important;
+}
+
+/* ── Kill ALL transitions while the user is actively dragging or resizing.
+     This prevents the open-state transition from fighting the JS position
+     updates and is the single biggest drag-smoothness improvement. ── */
+.kos-window.win-dragging,
+.kos-window.win-resizing {
+  transition: none !important;
+  will-change: left, top, width, height;
+}
+
+/* ── Smooth geometry animation class (added/removed by JS for maximize toggle) ── */
+.kos-window.win-animating {
+  transition:
+    opacity      0.28s ease,
+    transform    0.32s var(--ease-spring),
+    border-radius 0.44s ease,
+    left   0.44s cubic-bezier(0.34, 1.20, 0.64, 1),
+    top    0.44s cubic-bezier(0.34, 1.20, 0.64, 1),
+    width  0.44s cubic-bezier(0.34, 1.20, 0.64, 1),
+    height 0.44s cubic-bezier(0.34, 1.20, 0.64, 1) !important;
+}
+
+/* Maximized state — border-radius collapses (geometry set by JS inline styles) */
+.kos-window.win-maximized {
+  border-radius: 0;
+}
+
+.kos-window.win-focused {
+  box-shadow: 0 20px 60px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.5);
+}
+body.dark .kos-window.win-focused {
+  box-shadow: 0 24px 60px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.12);
+}
+
+
+/* ═══ TITLEBAR ═══ */
+.win-titlebar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px; border-bottom: 1px solid rgba(0,0,0,0.08);
+  flex-shrink: 0; cursor: grab;
+  /* Collapse animation when window is maximized */
+  max-height: 80px;
+  overflow: hidden;
+  transition:
+    max-height  0.36s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity     0.26s ease,
+    padding-top    0.34s ease,
+    padding-bottom 0.34s ease,
+    border-bottom-width 0.30s ease;
+}
+.win-titlebar:active { cursor: grabbing; }
+body.dark .win-titlebar { border-bottom-color: rgba(255,255,255,0.08); }
+
+/* Collapse the titlebar when window is maximized */
+.kos-window.win-maximized .win-titlebar {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-bottom-width: 0;
+}
+
+.win-title {
+  font-size: 0.92rem; font-weight: 700; color: #111;
+  flex: 1; text-align: center; letter-spacing: 0.01em;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.6);
+}
+body.dark .win-title { color: #f5f5f5; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+
+/* Left spacer balances the controls width so title stays truly centred */
+.win-title-spacer { width: 102px; flex-shrink: 0; }
+
+/* ═══ WIN CONTROLS (Windows-style, right-hand side) ═══ */
+.win-controls {
+  display: flex; align-items: center; gap: 5px; flex-shrink: 0;
+}
+
+.win-ctrl-btn {
+  width: 30px; height: 26px; border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.14);
+  background: rgba(0,0,0,0.1);
+  color: #222; font-size: 0.7rem;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s,
+              transform 0.15s var(--ease-spring), box-shadow 0.15s;
+}
+.win-ctrl-btn:hover {
+  background: rgba(0,0,0,0.2); color: #000;
+  border-color: rgba(0,0,0,0.28);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+  transform: scale(1.1);
+}
+.win-ctrl-btn:active { transform: scale(0.92); box-shadow: none; }
+
+/* Close gets a red tint on hover */
+.win-ctrl-btn[data-action="close"]:hover {
+  background: rgba(210,40,40,0.18); color: #b91c1c;
+  border-color: rgba(200,40,40,0.35);
+}
+
+/* Dark mode */
+body.dark .win-ctrl-btn {
+  background: rgba(255,255,255,0.14);
+  border: 1px solid rgba(255,255,255,0.22);
+  color: #ffffff;
+}
+body.dark .win-ctrl-btn:hover {
+  background: rgba(255,255,255,0.26); color: #fff;
+  border-color: rgba(255,255,255,0.4);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+body.dark .win-ctrl-btn[data-action="close"]:hover {
+  background: rgba(255,60,60,0.28); color: #fca5a5;
+  border-color: rgba(255,80,80,0.45);
+}
+
+/* Scrollable content body */
+.win-body {
+  overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 24px;
+  flex: 1; scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.15) transparent;
+  /* Isolate layout and style recalculations so changes inside an app
+     don't trigger a full-page style pass */
+  contain: layout style;
+}
+
+
+
+
+/* ═══ SNAP GHOST — translucent preview shown while dragging into a snap zone ═══ */
+#kos-snap-ghost {
+  position: fixed;
+  z-index: 9998;
+  pointer-events: none;
+  background: rgba(180, 230, 255, 0.18);
+  backdrop-filter: blur(5px) saturate(1.3);
+  -webkit-backdrop-filter: blur(5px) saturate(1.3);
+  border: 1.5px solid rgba(0, 200, 255, 0.45);
+  opacity: 0;
+  transform: scale(0.97);
+  transition: opacity 0.15s ease, transform 0.18s cubic-bezier(0.34, 1.20, 0.64, 1);
+  box-shadow: 0 0 20px rgba(0, 180, 255, 0.10);
+}
+#kos-snap-ghost.kos-snap-ghost--visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Zone-specific border-radius so ghost feels like a real window slot */
+#kos-snap-ghost[data-zone="top"]   { border-radius: 0; }
+#kos-snap-ghost[data-zone="left"]  { border-radius: 0 10px 10px 0; }
+#kos-snap-ghost[data-zone="right"] { border-radius: 10px 0 0 10px; }
+
+body.dark #kos-snap-ghost {
+  background: rgba(0, 160, 220, 0.16);
+  backdrop-filter: blur(6px) saturate(1.4);
+  -webkit-backdrop-filter: blur(6px) saturate(1.4);
+  border-color: rgba(0, 220, 255, 0.55);
+  box-shadow: 0 0 26px rgba(0, 180, 255, 0.16);
+}
+
+/* ═══ SNAPPED WINDOW STATES ═══ */
+/* Remove border-radius when flush against an edge */
+.kos-window.win-snapped-left  { border-radius: 0 10px 10px 0; }
+.kos-window.win-snapped-right { border-radius: 10px 0 0 10px; }
+
+/* Subtle neon seam along the snap edge */
+.kos-window.win-snapped-left {
+  border-right: 1.5px solid rgba(0, 200, 255, 0.20);
+}
+.kos-window.win-snapped-right {
+  border-left: 1.5px solid rgba(0, 200, 255, 0.20);
+}
+
+body.dark .kos-window.win-snapped-left {
+  border-right-color: rgba(0, 220, 255, 0.30);
+}
+body.dark .kos-window.win-snapped-right {
+  border-left-color: rgba(0, 220, 255, 0.30);
+}
+.resize-handle { position: absolute; z-index: 20; }
+
+/* corners */
+.resize-handle.nw { top: 0;    left: 0;    width: 12px; height: 12px; cursor: nw-resize; }
+.resize-handle.ne { top: 0;    right: 0;   width: 12px; height: 12px; cursor: ne-resize; }
+.resize-handle.sw { bottom: 0; left: 0;    width: 12px; height: 12px; cursor: sw-resize; }
+.resize-handle.se { bottom: 0; right: 0;   width: 12px; height: 12px; cursor: se-resize; }
+
+/* edges */
+.resize-handle.n { top: 0;    left: 12px;  right: 12px;  height: 4px; cursor: n-resize; }
+.resize-handle.s { bottom: 0; left: 12px;  right: 12px;  height: 4px; cursor: s-resize; }
+.resize-handle.e { top: 12px; bottom: 12px; right: 0;    width: 4px;  cursor: e-resize; }
+.resize-handle.w { top: 12px; bottom: 12px; left: 0;     width: 4px;  cursor: w-resize; }
+/* ══ PERFORMANCE — content-visibility ══════════════════════════════
+   Minimized windows are completely off-screen. Telling the browser
+   their content is not visible lets it skip style, layout and paint
+   for those subtrees entirely — significant win with many open apps.
+   'auto' is safe: the browser re-paints when the window is shown.
+   The will-change hints below are applied TRANSIENTLY via JS
+   during drag/resize only — not permanently as before.
+   ══════════════════════════════════════════════════════════════ */
+.kos-window.win-minimized {
+  content-visibility: hidden;
+}
+.kos-window.win-dragging,
+.kos-window.win-resizing {
+  will-change: left, top, width, height;
+  contain: layout style;
+}

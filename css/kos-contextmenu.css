@@ -1,0 +1,282 @@
+/* ══════════════════════════════════════════════════════════════
+   KOS ULTIMATE 2026 — kos-contextmenu.css
+   Right-click context menu system.
+   Liquid-glass aesthetic · Light + Dark mode · Spring animations.
+   ══════════════════════════════════════════════════════════════ */
+
+/* ─── Base Menu Shell ──────────────────────────────────────── */
+#kos-ctx-menu {
+  /* Positioning */
+  position: fixed;
+  z-index: 9000;
+  min-width: 210px;
+  max-width: 280px;
+
+  /* Liquid Glass — Light */
+  background      : rgba(255, 255, 255, 0.58);
+  backdrop-filter : blur(36px) saturate(1.8) brightness(1.06);
+  -webkit-backdrop-filter: blur(36px) saturate(1.8) brightness(1.06);
+  border          : 1px solid rgba(255, 255, 255, 0.74);
+  box-shadow      :
+    0 2px  0   rgba(255, 255, 255, 0.55) inset,   /* top specular */
+    0 -1px 0   rgba(0, 0, 0, 0.04)       inset,   /* bottom edge */
+    0 16px 44px rgba(0, 0, 0, 0.18),
+    0  4px 12px rgba(0, 0, 0, 0.10);
+
+  border-radius: 16px;
+  padding: 6px;
+  overflow: hidden;
+
+  /* Entry animation — starts invisible, springs into place */
+  opacity   : 0;
+  transform : scale(0.86) translateY(-6px);
+  transform-origin: var(--ctx-origin-x, top) var(--ctx-origin-y, left);
+  transition:
+    opacity   0.22s var(--ease-smooth,   cubic-bezier(0.4, 0, 0.2, 1)),
+    transform 0.32s var(--ease-spring,   cubic-bezier(0.34, 1.56, 0.64, 1));
+  pointer-events: none;
+}
+
+#kos-ctx-menu.ctx-visible {
+  opacity      : 1;
+  transform    : scale(1) translateY(0);
+  pointer-events: all;
+}
+
+/* ─── Section Labels ───────────────────────────────────────── */
+.ctx-section-label {
+  font-family    : 'Outfit', 'Rajdhani', sans-serif;
+  font-size      : 0.62rem;
+  font-weight    : 600;
+  letter-spacing : 0.12em;
+  text-transform : uppercase;
+  color          : rgba(0, 0, 0, 0.38);
+  padding        : 8px 14px 4px;
+  pointer-events : none;
+  user-select    : none;
+}
+
+/* ─── Separator ────────────────────────────────────────────── */
+.ctx-sep {
+  height    : 1px;
+  margin    : 5px 8px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(0, 0, 0, 0.10) 20%,
+    rgba(0, 0, 0, 0.10) 80%,
+    transparent
+  );
+  pointer-events: none;
+}
+
+/* ─── Menu Items ───────────────────────────────────────────── */
+.ctx-item {
+  display       : flex;
+  align-items   : center;
+  gap           : 10px;
+  padding       : 9px 14px;
+  border-radius : 10px;
+  cursor        : pointer;
+  user-select   : none;
+
+  font-family   : 'Outfit', sans-serif;
+  font-size     : 0.875rem;
+  font-weight   : 500;
+  color         : rgba(0, 0, 0, 0.82);
+
+  transition    :
+    background 0.14s ease,
+    color      0.14s ease,
+    transform  0.18s var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1));
+  position: relative;
+}
+
+.ctx-item i.ctx-icon {
+  width     : 18px;
+  text-align: center;
+  font-size : 0.82rem;
+  opacity   : 0.72;
+  flex-shrink: 0;
+  transition: opacity 0.14s;
+}
+
+.ctx-item .ctx-label {
+  flex: 1;
+}
+
+/* Keyboard shortcut hint */
+.ctx-item .ctx-shortcut {
+  font-family    : 'Share Tech Mono', monospace;
+  font-size      : 0.68rem;
+  letter-spacing : 0.04em;
+  color          : rgba(0, 0, 0, 0.32);
+  margin-left    : auto;
+  white-space    : nowrap;
+}
+
+/* Arrow for sub-menu items */
+.ctx-item .ctx-arrow {
+  font-size : 0.72rem;
+  opacity   : 0.4;
+  margin-left: auto;
+}
+
+/* Hover state */
+.ctx-item:hover {
+  background: rgba(0, 99, 175, 0.10);
+  color     : #0057af;
+  transform : translateX(2px);
+}
+.ctx-item:hover i.ctx-icon  { opacity: 1; }
+.ctx-item:hover .ctx-shortcut { color: rgba(0, 87, 175, 0.52); }
+
+/* Active / pressed */
+.ctx-item:active {
+  background: rgba(0, 99, 175, 0.18);
+  transform : scale(0.97) translateX(2px);
+}
+
+/* Destructive items (e.g. "Close", "Shutdown") */
+.ctx-item.ctx-danger       { color: rgba(200, 30, 30, 0.82); }
+.ctx-item.ctx-danger i     { color: rgba(200, 30, 30, 0.72); }
+.ctx-item.ctx-danger:hover {
+  background: rgba(200, 30, 30, 0.09);
+  color     : #c41e1e;
+  transform : translateX(2px);
+}
+
+/* Disabled items */
+.ctx-item.ctx-disabled {
+  opacity       : 0.38;
+  cursor        : default;
+  pointer-events: none;
+}
+
+/* Checked / toggle items */
+.ctx-item .ctx-check {
+  width     : 14px;
+  text-align: center;
+  font-size : 0.72rem;
+  color     : #0063af;
+  flex-shrink: 0;
+}
+
+/* ─── Sub-menu container ───────────────────────────────────── */
+.ctx-submenu {
+  position : absolute;
+  left     : calc(100% + 6px);
+  top      : -6px;
+
+  min-width: 190px;
+  max-width: 260px;
+
+  background      : rgba(255, 255, 255, 0.60);
+  backdrop-filter : blur(36px) saturate(1.8) brightness(1.06);
+  -webkit-backdrop-filter: blur(36px) saturate(1.8) brightness(1.06);
+  border          : 1px solid rgba(255, 255, 255, 0.74);
+  box-shadow      :
+    0 2px  0   rgba(255, 255, 255, 0.55) inset,
+    0 16px 44px rgba(0, 0, 0, 0.16),
+    0  4px 12px rgba(0, 0, 0, 0.09);
+
+  border-radius: 14px;
+  padding: 6px;
+  z-index: 9001;
+
+  opacity   : 0;
+  transform : scale(0.90) translateX(-8px);
+  transform-origin: left center;
+  transition:
+    opacity   0.18s ease,
+    transform 0.26s var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1));
+  pointer-events: none;
+}
+
+.ctx-item:hover > .ctx-submenu {
+  opacity      : 1;
+  transform    : scale(1) translateX(0);
+  pointer-events: all;
+}
+
+/* Flip sub-menu to left when near right edge */
+.ctx-submenu.ctx-flip-x {
+  left : auto;
+  right: calc(100% + 6px);
+  transform-origin: right center;
+  transform: scale(0.90) translateX(8px);
+}
+.ctx-item:hover > .ctx-submenu.ctx-flip-x {
+  transform: scale(1) translateX(0);
+}
+
+/* ─── Zone Badge (debug / dev aid, hidden in prod) ────────── */
+.ctx-zone-badge {
+  font-family    : 'Share Tech Mono', monospace;
+  font-size      : 0.6rem;
+  letter-spacing : 0.1em;
+  text-transform : uppercase;
+  color          : rgba(0, 0, 0, 0.25);
+  padding        : 4px 14px 2px;
+  pointer-events : none;
+  user-select    : none;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   DARK MODE OVERRIDES
+   ══════════════════════════════════════════════════════════════ */
+
+body.dark #kos-ctx-menu {
+  background      : rgba(14, 14, 22, 0.62);
+  backdrop-filter : blur(40px) saturate(2.0) brightness(0.88);
+  -webkit-backdrop-filter: blur(40px) saturate(2.0) brightness(0.88);
+  border          : 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow      :
+    0 1px  0   rgba(255, 255, 255, 0.08) inset,
+    0 -1px 0   rgba(0, 0, 0, 0.3)        inset,
+    0 20px 60px rgba(0, 0, 0, 0.52),
+    0  6px 18px rgba(0, 0, 0, 0.30);
+}
+
+body.dark .ctx-section-label { color: rgba(255, 255, 255, 0.30); }
+
+body.dark .ctx-sep {
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.10) 20%,
+    rgba(255, 255, 255, 0.10) 80%,
+    transparent
+  );
+}
+
+body.dark .ctx-item          { color: rgba(240, 240, 240, 0.88); }
+body.dark .ctx-item i.ctx-icon { opacity: 0.65; }
+body.dark .ctx-item .ctx-shortcut { color: rgba(255, 255, 255, 0.22); }
+
+body.dark .ctx-item:hover {
+  background: rgba(255, 255, 255, 0.10);
+  color     : #ffffff;
+}
+body.dark .ctx-item:hover .ctx-shortcut { color: rgba(255, 255, 255, 0.42); }
+body.dark .ctx-item:hover i.ctx-icon { opacity: 1; }
+body.dark .ctx-item:active { background: rgba(255, 255, 255, 0.16); }
+
+body.dark .ctx-item.ctx-danger       { color: rgba(255, 110, 110, 0.9); }
+body.dark .ctx-item.ctx-danger:hover {
+  background: rgba(220, 60, 60, 0.14);
+  color     : #ff7070;
+}
+
+body.dark .ctx-item .ctx-check { color: #4db8ff; }
+
+body.dark .ctx-submenu {
+  background      : rgba(14, 14, 22, 0.65);
+  border          : 1px solid rgba(255, 255, 255, 0.11);
+  box-shadow      :
+    0 1px 0 rgba(255, 255, 255, 0.07) inset,
+    0 20px 60px rgba(0, 0, 0, 0.48),
+    0  4px 14px rgba(0, 0, 0, 0.28);
+}
+
+body.dark .ctx-zone-badge { color: rgba(255, 255, 255, 0.20); }

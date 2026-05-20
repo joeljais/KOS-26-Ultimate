@@ -1,0 +1,126 @@
+/* css/apps/studio.css — KOS Studio in-OS app builder */
+.studio-body-wrap { padding: 0 !important; gap: 0 !important; overflow: hidden; }
+
+/* Home */
+.studio-home { display: flex; flex-direction: column; height: 100%; background: #f7f7f9; padding: 24px; }
+.studio-home-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.studio-logo { font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; font-weight: 700; background: linear-gradient(135deg,#5e5ce6,#bf5af2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.studio-help-btn { display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.12); background: #fff; color: #555; font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: background 0.2s, transform 0.15s; }
+.studio-help-btn:hover { background: #f0f0ff; color: #5e5ce6; transform: scale(1.03); }
+.studio-apps-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.15) transparent; }
+.studio-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: #aaa; text-align: center; padding: 40px; }
+.studio-empty i { font-size: 2.5rem; opacity: 0.4; }
+.studio-empty p { font-size: 0.9rem; line-height: 1.5; }
+.studio-app-row { display: flex; align-items: center; gap: 12px; background: #fff; border-radius: 14px; padding: 12px 16px; border: 1px solid rgba(0,0,0,0.07); box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: box-shadow 0.2s; }
+.studio-app-row:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.09); }
+.studio-app-icon { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg,#5e5ce6,#bf5af2); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1rem; flex-shrink: 0; }
+.studio-app-info { flex: 1; min-width: 0; }
+.studio-app-name { font-weight: 600; font-size: 0.92rem; color: #1c1c1e; }
+.studio-app-meta { margin-top: 3px; }
+.studio-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 0.68rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; }
+.studio-badge.published { background: rgba(52,199,89,0.12); color: #25a244; }
+.studio-badge.draft     { background: rgba(0,0,0,0.06); color: #888; }
+.studio-badge.system    { background: rgba(0,122,255,0.12); color: #007aff; }
+.studio-app-actions { display: flex; gap: 7px; flex-shrink: 0; }
+.studio-action-btn { display: flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: background 0.15s, transform 0.15s; }
+.studio-action-btn.edit     { border: 1px solid rgba(94,92,230,0.3); background: rgba(94,92,230,0.08); color: #5e5ce6; }
+.studio-action-btn.edit:hover { background: rgba(94,92,230,0.18); transform: scale(1.05); }
+.studio-action-btn.open-app { border: 1px solid rgba(0,122,255,0.3); background: rgba(0,122,255,0.08); color: #007aff; }
+.studio-action-btn.open-app:hover { background: rgba(0,122,255,0.18); transform: scale(1.05); }
+.studio-action-btn.del      { border: 1px solid rgba(255,59,48,0.3); background: rgba(255,59,48,0.07); color: #ff3b30; padding: 6px 10px; }
+.studio-action-btn.del:hover { background: rgba(255,59,48,0.17); transform: scale(1.05); }
+.studio-create-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 24px; border-radius: 14px; font-size: 1rem; font-weight: 600; background: linear-gradient(135deg,#5e5ce6,#bf5af2); color: #fff; border: none; cursor: pointer; box-shadow: 0 4px 18px rgba(94,92,230,0.35); transition: transform 0.2s var(--ease-spring), box-shadow 0.2s; }
+.studio-create-btn:hover { transform: scale(1.03) translateY(-2px); box-shadow: 0 8px 28px rgba(94,92,230,0.45); }
+
+/* Home tabs */
+.studio-home-tabs { display: flex; gap: 4px; margin-bottom: 16px; background: rgba(0,0,0,0.06); border-radius: 12px; padding: 4px; }
+.studio-home-tab { flex: 1; padding: 8px 12px; border-radius: 9px; border: none; background: none; font-size: 0.82rem; font-weight: 600; color: #888; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.2s, color 0.2s; }
+.studio-home-tab.active { background: #fff; color: #1c1c1e; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.studio-sys-info { font-size: 0.78rem; color: #888; margin-bottom: 12px; padding: 10px 14px; background: rgba(0,122,255,0.06); border-radius: 10px; border: 1px solid rgba(0,122,255,0.12); line-height: 1.5; }
+
+/* Editor */
+.studio-editor { display: flex; flex-direction: column; height: 100%; background: #1e1e2e; }
+.studio-editor-topbar { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: #16162a; border-bottom: 1px solid rgba(255,255,255,0.07); flex-shrink: 0; }
+.studio-back-btn { display: flex; align-items: center; gap: 5px; background: none; border: none; color: rgba(255,255,255,0.55); font-size: 0.82rem; cursor: pointer; padding: 5px 8px; border-radius: 7px; transition: color 0.15s, background 0.15s; }
+.studio-back-btn:hover { color: #fff; background: rgba(255,255,255,0.08); }
+.studio-name-input { flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; color: #fff; font-family: 'Outfit', sans-serif; font-size: 0.9rem; font-weight: 600; padding: 6px 12px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+.studio-name-input:focus { border-color: rgba(94,92,230,0.7); box-shadow: 0 0 0 2px rgba(94,92,230,0.2); }
+.studio-editor-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.studio-btn { display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 9px; font-size: 0.82rem; font-weight: 600; border: none; cursor: pointer; transition: transform 0.15s, filter 0.15s; }
+.studio-btn:hover { transform: scale(1.04); filter: brightness(1.1); }
+.studio-btn-launch  { background: rgba(52,199,89,0.2); color: #30d158; border: 1px solid rgba(52,199,89,0.3); }
+.studio-btn-publish { background: linear-gradient(135deg,#5e5ce6,#bf5af2); color: #fff; }
+.studio-editor-body { display: flex; flex: 1; overflow: hidden; }
+
+/* Sidebar */
+.studio-sidebar { width: 210px; flex-shrink: 0; display: flex; flex-direction: column; background: #12121e; border-right: 1px solid rgba(255,255,255,0.07); overflow: hidden; }
+.studio-sidebar-title { padding: 10px 14px; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.35); border-bottom: 1px solid rgba(255,255,255,0.06); flex-shrink: 0; }
+.studio-css-browser { flex: 1; overflow-y: auto; padding: 6px; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.12) transparent; }
+.studio-css-item { border-radius: 8px; padding: 8px 10px; margin-bottom: 4px; cursor: pointer; transition: background 0.15s; border: 1px solid rgba(255,255,255,0.05); }
+.studio-css-item:hover { background: rgba(255,255,255,0.05); }
+.studio-css-name { font-size: 0.75rem; font-weight: 600; color: rgba(255,255,255,0.75); margin-bottom: 3px; }
+.studio-css-preview { font-size: 0.63rem; color: rgba(255,255,255,0.28); font-family: 'Share Tech Mono', monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px; }
+.studio-copy-btn { width: 100%; padding: 4px; border-radius: 5px; font-size: 0.7rem; background: rgba(94,92,230,0.18); border: 1px solid rgba(94,92,230,0.3); color: rgba(94,92,230,0.9); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; transition: background 0.15s; }
+.studio-copy-btn:hover { background: rgba(94,92,230,0.35); color: #fff; }
+
+/* Code area */
+.studio-code-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+.studio-tabs { display: flex; gap: 2px; padding: 8px 12px 0; background: #1e1e2e; border-bottom: 1px solid rgba(255,255,255,0.07); flex-shrink: 0; }
+.studio-tab { padding: 6px 16px; border-radius: 7px 7px 0 0; background: none; border: none; color: rgba(255,255,255,0.4); font-family: 'Outfit', sans-serif; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: color 0.15s, background 0.15s; }
+.studio-tab:hover { color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.05); }
+.studio-tab.active { background: #252535; color: #fff; border: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid #252535; }
+.studio-textarea { flex: 1; background: #252535; border: none; outline: none; resize: none; color: #cdd6f4; font-family: 'Share Tech Mono', monospace; font-size: 0.82rem; line-height: 1.6; padding: 14px 18px; tab-size: 2; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.12) transparent; }
+.studio-textarea::placeholder { color: rgba(255,255,255,0.15); }
+.studio-hidden { display: none !important; }
+
+/* Preview panel */
+.studio-preview-panel { position: absolute; inset: 0; display: flex; flex-direction: column; background: #fff; z-index: 10; }
+.studio-preview-bar { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; background: #f5f5f7; border-bottom: 1px solid #e5e5ea; font-size: 0.82rem; font-weight: 600; color: #555; flex-shrink: 0; }
+.studio-preview-close { background: rgba(255,59,48,0.1); border: 1px solid rgba(255,59,48,0.25); color: #ff3b30; border-radius: 6px; width: 26px; height: 26px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; transition: background 0.15s; }
+.studio-preview-close:hover { background: rgba(255,59,48,0.25); }
+.studio-preview-frame { flex: 1; border: none; background: #fff; }
+
+/* Publish menu */
+.studio-publish-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.55); backdrop-filter: blur(8px); z-index: 30; display: flex; align-items: center; justify-content: center; }
+.studio-publish-card { background: #1e1e2e; border-radius: 20px; padding: 28px; max-width: 440px; width: 90%; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 24px 70px rgba(0,0,0,0.6); }
+.studio-publish-title { font-size: 1.15rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.studio-publish-title i { color: #bf5af2; }
+.studio-publish-subtitle { font-size: 0.82rem; color: rgba(255,255,255,0.45); margin-bottom: 20px; }
+.studio-publish-options { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+.studio-publish-option { display: flex; align-items: flex-start; gap: 14px; background: rgba(255,255,255,0.05); border-radius: 14px; padding: 14px; border: 1px solid rgba(255,255,255,0.08); cursor: pointer; transition: background 0.2s, border-color 0.2s, transform 0.2s var(--ease-spring); }
+.studio-publish-option:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.18); transform: translateY(-2px); }
+.studio-pub-opt-icon { width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+.studio-pub-opt-title { font-size: 0.9rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
+.studio-pub-opt-desc  { font-size: 0.76rem; color: rgba(255,255,255,0.45); line-height: 1.45; }
+.studio-pub-cancel { width: 100%; padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: background 0.2s; }
+.studio-pub-cancel:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+/* Custom app window body */
+.custom-app-body { padding: 0 !important; overflow: hidden !important; display: block !important; flex: 1; }
+
+/* DOM preview in sys editor */
+.studio-dom-preview { flex: 1; background: #252535; color: #8be9fd; font-family: 'Share Tech Mono', monospace; font-size: 0.72rem; line-height: 1.5; padding: 14px 18px; white-space: pre-wrap; word-break: break-all; display: block !important; overflow: auto; }
+.studio-dom-preview.studio-hidden { display: none !important; }
+
+/* Help overlay */
+.studio-help-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); z-index: 20; display: flex; align-items: center; justify-content: center; }
+.studio-help-card { background: #fff; border-radius: 20px; padding: 28px; max-width: 480px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+.studio-help-title { font-size: 1.2rem; font-weight: 700; color: #1c1c1e; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+.studio-help-title i { color: #5e5ce6; }
+.studio-help-steps { display: flex; flex-direction: column; gap: 14px; margin-bottom: 22px; }
+.studio-help-step  { display: flex; gap: 12px; align-items: flex-start; }
+.studio-step-num   { width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg,#5e5ce6,#bf5af2); color: #fff; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.studio-help-step b { font-size: 0.88rem; color: #1c1c1e; display: block; margin-bottom: 2px; }
+.studio-help-step p { font-size: 0.8rem; color: #666; line-height: 1.45; margin: 0; }
+.studio-help-close  { width: 100%; padding: 11px; border-radius: 12px; border: none; background: linear-gradient(135deg,#5e5ce6,#bf5af2); color: #fff; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: transform 0.15s, filter 0.15s; }
+.studio-help-close:hover { transform: scale(1.02); filter: brightness(1.08); }
+
+/* Dark mode */
+body.dark .studio-home       { background: #1c1c2e; }
+body.dark .studio-app-row    { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.08); }
+body.dark .studio-app-name   { color: #f0f0f0; }
+body.dark .studio-help-btn   { background: rgba(255,255,255,0.08); color: #ccc; border-color: rgba(255,255,255,0.14); }
+body.dark .studio-help-btn:hover { background: rgba(94,92,230,0.2); color: #a5a3ff; }
+body.dark .studio-home-tabs  { background: rgba(255,255,255,0.07); }
+body.dark .studio-home-tab.active { background: rgba(255,255,255,0.14); color: #f0f0f0; box-shadow: none; }
+body.dark .studio-sys-info   { background: rgba(10,132,255,0.08); border-color: rgba(10,132,255,0.18); color: #9ab; }

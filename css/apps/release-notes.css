@@ -1,0 +1,212 @@
+/* css/apps/release-notes.css
+   ══════════════════════════════════════════════════════════════
+   Release Notes — styles
+   Maximize is hidden via #win-releasenotes selector (no WM changes).
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Hide maximize button — no WM modification needed ── */
+#win-releasenotes .win-ctrl-btn[data-action="maximize"] { display: none !important; }
+
+/* ── Scrollable body ── */
+.rn-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px !important;
+  overflow-y: auto;
+}
+
+/* ── App header ── */
+.rn-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 4px 0 8px;
+}
+
+.rn-header-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #5e5ce6, #bf5af2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 6px 18px rgba(94, 92, 230, 0.3);
+  filter: var(--icon-filter, none);
+}
+
+.rn-main-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #1c1c1e;
+  margin: 0;
+}
+
+.rn-main-sub {
+  font-size: 0.76rem;
+  color: #aaa;
+  margin: 3px 0 0;
+}
+
+/* ── Shared version row ── */
+.rn-ver-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.rn-version-badge {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #1c1c1e;
+  font-family: 'Share Tech Mono', monospace;
+  letter-spacing: -0.01em;
+}
+
+.rn-version-small { font-size: 0.78rem; }
+
+/* ── Tag pills ── */
+.rn-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+/* Glass UI Optimization: Higher opacity + matching borders */
+
+.rn-tag-blue { 
+  background: rgba(0, 122, 255, 0.35); 
+  color: #00000078;
+  border: 1px solid rgba(0, 122, 255, 0.3);
+}
+
+.rn-tag-green { 
+  background: rgba(48, 209, 88, 0.35); 
+  color: #00000078;
+  border: 1px solid rgba(48, 209, 88, 0.3);
+}
+
+.rn-tag-purple { 
+  background: rgba(191, 90, 242, 0.35); 
+  color: #00000078;
+  border: 1px solid rgba(191, 90, 242, 0.3);
+}
+
+.rn-tag-gray { 
+  background: rgba(142, 142, 147, 0.35); 
+   color: #00000078;
+  border: 1px solid rgba(142, 142, 147, 0.3);
+}
+
+.rn-tag-orange { 
+  background: rgba(255, 159, 10, 0.35); 
+  color: #00000078; 
+  border: 1px solid rgba(255, 159, 10, 0.3);
+}
+.rn-date {
+  font-size: 0.72rem;
+  color: #444444;
+  margin-left: auto;
+}
+
+/* ── Latest release card (prominent) ── */
+.rn-latest-card {
+  background: rgba(0,122,255,0.05);
+  border: 1px solid rgba(0,122,255,0.12);
+  border-radius: 16px;
+  padding: 18px 20px;
+}
+
+/* ── Older release cards ── */
+.rn-older-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #bbb;
+  padding: 6px 4px 2px;
+}
+
+.rn-older-card {
+  background: rgba(0,0,0,0.03);
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 14px;
+  padding: 14px 18px;
+}
+
+/* ── Sections inside a card ── */
+.rn-section { margin-bottom: 12px; }
+.rn-section:last-child { margin-bottom: 0; }
+
+.rn-section-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 7px;
+}
+
+/* ── Bullet list ── */
+.rn-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.rn-item {
+  font-size: 0.8rem;
+  color: #444;
+  line-height: 1.5;
+  padding-left: 16px;
+  position: relative;
+}
+
+.rn-item::before {
+  content: '·';
+  position: absolute;
+  left: 4px;
+  color: #007aff;
+  font-weight: 900;
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+/* ═══════════════════════════════
+   DARK MODE
+═══════════════════════════════ */
+body.dark .rn-main-title    { color: #f0f0f0; }
+body.dark .rn-main-sub      { color: #555; }
+body.dark .rn-version-badge { color: #e0e0e0; }
+body.dark .rn-date          { color: #ffffff; }
+
+body.dark .rn-latest-card {
+  background: rgba(0,122,255,0.08);
+  border-color: rgba(0,122,255,0.18);
+}
+
+body.dark .rn-older-card {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.08);
+}
+
+body.dark .rn-older-label   { color: #ffffff; }
+body.dark .rn-section-title { color: #ccc; }
+body.dark .rn-item          { color: #999; }
+
+body.dark .rn-tag-blue   { background: rgba(0,122,255,0.18);   color: #4da3ff; }
+body.dark .rn-tag-green  { background: rgba(48,209,88,0.15);   color: #30d158; }
+body.dark .rn-tag-purple { background: rgba(191,90,242,0.15);  color: #d07ef7; }
+body.dark .rn-tag-gray   { background: rgba(142,142,147,0.15); color: #8e8e93; }
+body.dark .rn-tag-orange { background: rgba(255,159,10,0.15);  color: #ff9f0a; }

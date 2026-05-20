@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KOS</title>
+  <link rel="manifest" href="manifest.json">
+
+  <!-- ── Service Worker (non-blocking inline) ── -->
+  <script>
+    if ('serviceWorker' in navigator)
+      navigator.serviceWorker.register('sw.js');
+  </script>
+
+  <!-- ── Google Fonts — non-render-blocking (media=print swap trick) ──
+       Load fonts with media="print" so they never block first paint.
+       onload switches media to "all" once the sheet is ready.       -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Outfit:wght@300;400;500&display=swap">
+  <link rel="stylesheet" media="print" onload="this.media='all'"
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Outfit:wght@300;400;500&display=swap">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Outfit:wght@300;400;500&display=swap">
+  </noscript>
+
+  <!-- ── FontAwesome — non-render-blocking ── -->
+  <link rel="stylesheet" media="print" onload="this.media='all'"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  </noscript>
+
+  <!-- ══════════════════════════════════════════════════════════
+       CORE STYLES  (always loaded)
+       To change variables / shell / dock / windows → edit only
+       the relevant file below.
+  ══════════════════════════════════════════════════════════════ -->
+  <link rel="stylesheet" href="css/core-vars.css">   <!-- variables, reset, icon gradients, keyframes -->
+  <link rel="stylesheet" href="css/shell.css">        <!-- boot, login, desktop, topbar -->
+  <link rel="stylesheet" href="css/dock.css">         <!-- dock + icon palette picker -->
+  <link rel="stylesheet" href="css/wm.css">           <!-- floating windows + resize handles -->
+  <link rel="stylesheet" href="css/spotlight.css">    <!-- spotlight overlay -->
+
+  <!-- ══════════════════════════════════════════════════════════
+       APP STYLES  (injected lazily by kos-wm.js on first open,
+       but pre-listed here for apps that restore from session)
+       Each file is scoped to its app's window only.
+  ══════════════════════════════════════════════════════════════ -->
+  <!-- Individual app stylesheets are injected by kos-wm.js when an app
+       is first launched. You do NOT need to add <link> tags here for
+       new apps — just set cssPath in kos-manifest.js. -->
+
+</head>
+<body>
+
+  <!-- ══ BOOT ══ -->
+  <div class="screen active" id="screen-boot">
+    <div class="boot-wordmark">KOS</div>
+    <div class="boot-gif-wrap"><img src="documents/load1.gif" alt="Booting..."></div>
+    <div class="boot-dots"><span></span><span></span><span></span></div>
+  </div>
+
+  <!-- ══ LOGIN ══ -->
+  <div class="screen" id="screen-login">
+    <div class="login-wallpaper"></div>
+    <div class="login-scanlines"></div>
+    <div class="login-ambient"></div>
+    <div class="login-card">
+      <div class="avatar-wrap">
+        <div class="avatar-ring"></div>
+        <img class="login-avatar" id="loginAvatar" src="documents/img_avatar.png" alt="User">
+      </div>
+      <div class="login-username">Developer</div>
+      <div class="login-sys-label">KOS · SECURE LOGIN</div>
+      <div class="login-input-wrap">
+        <input class="login-input" id="passwordBox" type="password" placeholder="Enter password" autocomplete="off">
+      </div>
+      <div class="login-error" id="loginError"></div>
+      <div class="login-divider"></div>
+      <div class="login-actions">
+        <button class="pill-btn" onclick="triggerSleep()">Sleep</button>
+        <button class="pill-btn" onclick="triggerRestart()">Restart</button>
+        <button class="pill-btn" onclick="triggerShutdown()">Shut Down</button>
+        <button class="pill-btn signin" onclick="attemptLogin()">Sign In →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SLEEP ══ -->
+  <div class="screen" id="screen-sleep"></div>
+
+  <!-- ══ RESTART ══ -->
+  <div class="screen" id="screen-restart">
+    <div class="boot-wordmark">KOS</div>
+    <div class="boot-gif-wrap"><img src="documents/load1.gif" alt="Restarting..."></div>
+    <div class="boot-dots"><span></span><span></span><span></span></div>
+  </div>
+
+  <!-- ══ SHUTDOWN ══ -->
+  <div class="screen" id="screen-shutdown">
+    <img class="shutdown-img" src="documents/shuting.gif" alt="Shutting down...">
+    <div class="shutdown-label">Shutting down…</div>
+  </div>
+
+  <!-- ══ DESKTOP ══ -->
+  <div class="screen" id="screen-desktop">
+
+    <div class="wallpaper" id="wallpaperEl"></div>
+
+    <!-- Topbar -->
+    <div class="topbar glass">
+      <div class="left">
+        <span class="system-name">KOS Ultimate 2026</span>
+        <div class="menu" onclick="toggleMenu(this, event)">
+          File
+          <div class="dropdown-menu">
+            <div>New</div><div>Open</div><div>Save</div>
+          </div>
+        </div>
+        <div class="menu" onclick="toggleMenu(this, event)">
+          Apps
+          <div class="dropdown-menu">
+            <div onclick="openSpotlight()">All Apps</div>
+            <div onclick="openApp('uimanager')">UI Manager</div>
+            <div onclick="openApp('taskmanager')">Task Manager</div>
+            <div onclick="openApp('gallery')">Photos</div>
+            <div onclick="openApp('browser')">Browser</div>
+          </div>
+        </div>
+        <div class="menu" onclick="toggleMenu(this, event)">
+          System
+          <div class="dropdown-menu">
+            <div onclick="triggerRestart()">Restart</div>
+            <div onclick="triggerSleep()">Sleep</div>
+            <div onclick="triggerShutdown()">Shutdown</div>
+          </div>
+        </div>
+      </div>
+      <div class="right">
+        <span id="clock"></span>
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light mode">
+          <i id="themeIcon" class="fa-solid fa-moon"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="desktop"></div>
+
+    <!-- ══ SPOTLIGHT ══ -->
+    <div id="spotlight-overlay" onclick="handleSpotlightBackdrop(event)">
+      <div id="spotlight-panel" class="glass">
+        <div id="spotlight-search-row">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input id="spotlight-input" type="text" placeholder="Search apps…" autocomplete="off"
+                 oninput="filterSpotlight(this.value)">
+          <button id="spotlight-close-btn" onclick="closeSpotlight()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="spotlight-apps-section">
+          <h4>Applications</h4>
+          <div id="spotlight-grid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dock hover trigger zone -->
+    <div id="dock-trigger-zone"></div>
+
+    <!-- Dock — populated by apps/dock.js via AppManifest -->
+    <div class="dock glass" id="dock">
+      <div class="dock-spotlight dock-item" onclick="openSpotlight()" title="Spotlight">
+        <div class="app-icon icon-spotlight"><i class="fa-solid fa-magnifying-glass"></i></div>
+        <span class="dock-label">Spotlight</span>
+      </div>
+      <div class="dock-separator"></div>
+      <div id="dock-apps"></div>
+    </div>
+
+    <!-- Toast notification -->
+    <div id="kos-toast"></div>
+
+  </div><!-- end screen-desktop -->
+
+  <!-- Hidden file inputs -->
+  <input type="file" id="wallpaperFileInput" accept="image/*" style="display:none"
+         onchange="handleWallpaperUpload(event)">
+  <input type="file" id="avatarFileInput"    accept="image/*" style="display:none"
+         onchange="handleAvatarUpload(event)">
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       SCRIPT LOADING ORDER  — do not reorder these
+
+       1. kos-manifest.js   — AppManifest array (no dependencies)
+       2. kos-kernel.js     — core utilities    (needs manifest for nothing, but defines KOSBus)
+       3. kos-wm.js         — window manager    (needs KOSBus + AppManifest)
+       4. apps/dock.js      — dock module       (needs WM + KOSBus + AppManifest)
+       5. apps/spotlight.js — spotlight         (needs WM + KOSBus + AppManifest)
+       6. app modules       — each registers itself with WM.setOnOpen()
+       7. kos-init.js       — boot orchestrator (runs after everything is ready)
+  ══════════════════════════════════════════════════════════════ -->
+  <script defer src="kos-manifest.js"></script>
+  <script defer src="kos-kernel.js"></script>
+  <script defer src="kos-wm.js"></script>
+
+  <!-- System UI modules -->
+  <script defer src="apps/dock.js"></script>
+  <script defer src="apps/spotlight.js"></script>
+
+  <!-- ── App modules ──
+       Each file calls WM.setOnOpen(id, fn) to register its init hook.
+       TO ADD A NEW APP: add one line here + one entry in kos-manifest.js.
+       Nothing else changes.
+  ── -->
+  <script defer src="apps/browser.js"></script>
+  <script defer src="apps/ui-manager.js"></script>
+  <script defer src="apps/task-mgr.js"></script>
+  <script defer src="apps/photos.js"></script>
+  <script defer src="apps/calculator.js"></script>
+  <script defer src="apps/studio.js"></script>
+  <script defer src="apps/about.js"></script>
+  <script defer src="apps/release-notes.js"></script>
+  <script defer src="apps/files.js"></script>
+ <script defer src="apps/notes.js"></script>
+  <!-- Boot orchestrator — must be last -->
+  <script defer src="kos-init.js"></script>
+
+</body>
+</html>

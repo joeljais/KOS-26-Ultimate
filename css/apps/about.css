@@ -1,0 +1,170 @@
+/* css/apps/about.css
+   ══════════════════════════════════════════════════════════════
+   About KOS — styles
+   Maximize is hidden via #win-about selector (no WM changes).
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Hide maximize button — no WM modification needed ── */
+#win-about .win-ctrl-btn[data-action="maximize"] { display: none !important; }
+
+/* ── Scrollable body ── */
+.about-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0 !important;
+  overflow-y: auto;
+}
+
+/* ── Hero ── */
+.ab-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 32px 28px 24px;
+  text-align: center;
+}
+
+.ab-logo-ring {
+  width: 76px;
+  height: 76px;
+  border-radius: 22px;
+  background: linear-gradient(145deg, #007aff, #5e5ce6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 28px rgba(0, 122, 255, 0.35);
+  filter: var(--icon-filter, none);
+}
+
+.ab-logo-icon {
+  font-size: 2.2rem;
+  color: #fff;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+}
+
+.ab-hero-text { display: flex; flex-direction: column; gap: 4px; }
+
+.ab-os-name {
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #1c1c1e;
+  margin: 0;
+}
+
+.ab-edition {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #007aff;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.ab-tagline {
+  font-size: 0.8rem;
+  color: #999;
+  margin: 4px 0 0;
+  font-style: italic;
+}
+
+/* ── Dividers ── */
+.ab-divider { height: 1px; background: rgba(0,0,0,0.07); margin: 0 20px; }
+
+/* ── Sections ── */
+.ab-section { padding: 18px 24px; }
+
+.ab-section-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #aaa;
+  margin: 0 0 10px;
+}
+
+/* ── Info grid rows ── */
+.ab-info-grid { display: flex; flex-direction: column; gap: 6px; }
+
+.ab-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 5px 10px;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.ab-row:hover { background: rgba(0,0,0,0.04); }
+
+.ab-row-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #555;
+  flex-shrink: 0;
+  margin-right: 12px;
+}
+
+.ab-row-value {
+  font-size: 0.8rem;
+  color: #1c1c1e;
+  font-family: 'Share Tech Mono', monospace;
+  text-align: right;
+  word-break: break-all;
+}
+
+/* ── Developer card ── */
+.ab-dev-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(0,0,0,0.03);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+.ab-dev-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #5e5ce6, #007aff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.ab-dev-info { display: flex; flex-direction: column; gap: 2px; }
+.ab-dev-name   { font-size: 0.92rem; font-weight: 700; color: #1c1c1e; }
+.ab-dev-handle { font-size: 0.76rem; color: #007aff; font-weight: 600; }
+.ab-dev-web    { font-size: 0.72rem; color: #aaa; }
+
+/* ── Copyright ── */
+.ab-copyright {
+  font-size: 0.68rem;
+  color: #bbb;
+  text-align: center;
+  padding: 12px 24px 22px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════
+   DARK MODE
+═══════════════════════════════ */
+body.dark .ab-os-name        { color: #f0f0f0; }
+body.dark .ab-tagline        { color: #666; }
+body.dark .ab-divider        { background: rgba(255,255,255,0.07); }
+body.dark .ab-section-title  { color: #555; }
+body.dark .ab-row:hover      { background: rgba(255,255,255,0.06); }
+body.dark .ab-row-label      { color: #888; }
+body.dark .ab-row-value      { color: #e0e0e0; }
+body.dark .ab-dev-card       { background: rgba(255,255,255,0.06); }
+body.dark .ab-dev-name       { color: #f0f0f0; }
+body.dark .ab-dev-web        { color: #666; }
+body.dark .ab-copyright      { color: #555; }
