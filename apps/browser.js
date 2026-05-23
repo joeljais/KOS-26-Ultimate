@@ -1,178 +1,113 @@
-/* ══════════════════════════════════════════════════════════════
-   KOS ULTIMATE 2026 — apps/browser.js
-   Chrome-style browser "Kalapurackal Smooth"
-   Registered to WM as: KOSApps.browser
-   ══════════════════════════════════════════════════════════════ */
-
 window.KOSApps = window.KOSApps || {};
 
 window.KOSApps.browser = {
-  /* State */
-  _tabs:    [{ url: 'https://en.wikipedia.org', title: 'Wikipedia' }],
-  _active:  0,
-  _history: [['https://en.wikipedia.org']],
-  _histIdx: [0],
-  _loading: false,
+  history: [],
+  historyIndex: -1,
 
-  /* Called by WM on every open */
-  init() {
-    this.renderTabs();
-    this.updateURLBar();
-    this._attachFrameEvents();
+  async init() {
+    // 1. Core initialization rules from KOSFS Alpha 9
+    const manifest = AppManifest.find(a => a.id === 'browser');
+    KOSFS.registerApp('browser', manifest.permissions);
+    await KOSFS.ready;
+
+    // 2. Structural Rendering
+    this.renderUI();
+
+    // 3. Event Listeners
+    this.bindEvents();
+
+    // 4. Fire up default homepage
+    this.navigateTo("https://example.com");
   },
 
-  _attachFrameEvents() {
-    const frame = document.getElementById('br-frame');
-    if (!frame) return;
-    frame.addEventListener('load', () => {
-      this._setLoading(false);
-      try {
-        const t = frame.contentDocument?.title;
-        if (t) { this._tabs[this._active].title = t; this.renderTabs(); }
-      } catch (_) {}
-      this.updateURLBar();
+  renderUI() {
+    const body = document.getElementById('browser-body');
+    if (!body) return;
+
+    body.innerHTML = `
+      <div class="chrome-container">
+        <div class="chrome-navbar">
+          <div class="chrome-actions">
+            <button class="chrome-btn" id="br-back" disabled><i class="fas fa-arrow-left"></i></button>
+            <button class="chrome-btn" id="br-forward" disabled><i class="fas fa-arrow-right"></i></button>
+            <button class="chrome-btn" id="br-refresh"><i class="fas fa-redo"></i></button>
+          </div>
+          <div class="chrome-omnibox">
+            <i class="fas fa-lock" id="br-lock-icon"></i>
+            <input type="text" class="chrome-input" id="br-url-input" placeholder="Search or type a URL" />
+          </div>
+        </div>
+        <div class="chrome-content">
+          <iframe class="chrome-frame" id="br-iframe" src="about:blank"></iframe>
+        </div>
+      </div>
+    `;
+  },
+
+  bindEvents() {
+    const input = document.getElementById('br-url-input');
+    const backBtn = document.getElementById('br-back');
+    const forwardBtn = document.getElementById('br-forward');
+    const refreshBtn = document.getElementById('br-refresh');
+    const iframe = document.getElementById('br-iframe');
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        let url = input.value.trim();
+        if (!/^https?:\/\//i.test(url)) {
+          url = 'https://' + url;
+        }
+        this.navigateTo(url);
+      }
+    });
+
+    backBtn.addEventListener('click', () => this.goBack());
+    forwardBtn.addEventListener('click', () => this.goForward());
+    refreshBtn.addEventListener('click', () => {
+      if (iframe) iframe.src = iframe.src;
     });
   },
 
-  _setLoading(state) {
-    this._loading = state;
-    const bar  = document.getElementById('br-progress-bar');
-    const icon = document.getElementById('br-reload-icon');
-    if (bar)  bar.classList.toggle('loading', state);
-    if (icon) icon.className = state ? 'fa-solid fa-xmark' : 'fa-solid fa-rotate-right';
-  },
+  navigateTo(url) {
+    const iframe = document.getElementById('br-iframe');
+    const input = document.getElementById('br-url-input');
+    
+    if (!iframe) return;
 
-  navigate(rawInput) {
-    let url = rawInput.trim();
-    if (!url) return;
-    if (!/^https?:\/\//i.test(url)) {
-      url = /^[\w-]+\.[\w.-]+(\/.*)?$/.test(url)
-        ? 'https://' + url
-        : 'https://duckduckgo.com/?q=' + encodeURIComponent(url);
+    // Push state tracking
+    if (this.historyIndex === -1 || this.history[this.historyIndex] !== url) {
+      this.history = this.history.slice(0, this.historyIndex + 1);
+      this.history.push(url);
+      this.historyIndex++;
     }
-    const hist = this._history[this._active];
-    this._history[this._active] = hist.slice(0, this._histIdx[this._active] + 1);
-    this._history[this._active].push(url);
-    this._histIdx[this._active] = this._history[this._active].length - 1;
-    this._tabs[this._active].url   = url;
-    this._tabs[this._active].title = this._getDomain(url);
-    this._loadFrame(url);
-    this.renderTabs();
-    this.updateURLBar();
+
+    input.value = url;
+    iframe.src = url;
+    this.updateNavButtons();
   },
 
-  _loadFrame(url) {
-    const frame = document.getElementById('br-frame');
-    if (!frame) return;
-    this._setLoading(true);
-    frame.src = url;
-  },
-
-  back() {
-    const idx = this._histIdx[this._active];
-    if (idx <= 0) return;
-    this._histIdx[this._active]--;
-    const url = this._history[this._active][this._histIdx[this._active]];
-    this._tabs[this._active].url = url;
-    this._loadFrame(url);
-    this.updateURLBar();
-  },
-
-  forward() {
-    const hist = this._history[this._active];
-    const idx  = this._histIdx[this._active];
-    if (idx >= hist.length - 1) return;
-    this._histIdx[this._active]++;
-    const url = hist[this._histIdx[this._active]];
-    this._tabs[this._active].url = url;
-    this._loadFrame(url);
-    this.updateURLBar();
-  },
-
-  reload() {
-    const frame = document.getElementById('br-frame');
-    if (!frame) return;
-    if (this._loading) { frame.src = frame.src; this._setLoading(false); }
-    else { this._setLoading(true); frame.src = frame.src; }
-  },
-
-  newTab(url = 'https://en.wikipedia.org') {
-    this._tabs.push({ url, title: 'New Tab' });
-    this._history.push([url]);
-    this._histIdx.push(0);
-    this.switchTab(this._tabs.length - 1);
-  },
-
-  closeTab(idx) {
-    if (this._tabs.length === 1) return;
-    this._tabs.splice(idx, 1);
-    this._history.splice(idx, 1);
-    this._histIdx.splice(idx, 1);
-    if (this._active >= this._tabs.length) this._active = this._tabs.length - 1;
-    else if (this._active > idx) this._active--;
-    this.switchTab(this._active);
-  },
-
-  switchTab(idx) {
-    this._active = idx;
-    this._loadFrame(this._tabs[idx].url);
-    this.renderTabs();
-    this.updateURLBar();
-  },
-
-  renderTabs() {
-    const row = document.getElementById('br-tabs-row');
-    if (!row) return;
-    row.innerHTML = this._tabs.map((tab, i) => {
-      const active = i === this._active;
-      const domain = this._getDomain(tab.url);
-      const favicon = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=16`;
-      return `<div class="br-tab ${active ? 'active' : ''}" onclick="Browser.switchTab(${i})">
-        <img class="br-favicon" src="${favicon}" onerror="this.style.display='none'" alt="">
-        <span class="br-tab-title">${tab.title || domain || 'New Tab'}</span>
-        <button class="br-tab-x" onclick="event.stopPropagation();Browser.closeTab(${i})" title="Close tab">×</button>
-      </div>`;
-    }).join('') + `<button class="br-newtab-btn" onclick="Browser.newTab()" title="New tab">+</button>`;
-  },
-
-  updateURLBar() {
-    const input  = document.getElementById('br-url-input');
-    const lockEl = document.getElementById('br-lock-icon');
-    if (!input) return;
-    const url     = this._tabs[this._active]?.url || '';
-    input.value   = url;
-    const isHttps = url.startsWith('https://');
-    if (lockEl) {
-      lockEl.className = isHttps
-        ? 'fa-solid fa-lock br-lock-icon secure'
-        : 'fa-solid fa-lock-open br-lock-icon insecure';
-      lockEl.title = isHttps ? 'Connection is secure' : 'Connection is not secure';
-    }
-    const backBtn = document.getElementById('br-btn-back');
-    const fwdBtn  = document.getElementById('br-btn-fwd');
-    if (backBtn) backBtn.disabled = this._histIdx[this._active] <= 0;
-    if (fwdBtn)  fwdBtn.disabled  = this._histIdx[this._active] >= this._history[this._active].length - 1;
-  },
-
-  handleKey(e) { if (e.key === 'Enter') this.navigate(e.target.value); },
-
-  bookmark() {
-    const starEl = document.getElementById('br-star-icon');
-    if (starEl) {
-      starEl.className = 'fa-solid fa-star';
-      starEl.style.color = '#f5a623';
-      showToast('Bookmarked! (demo)');
-      setTimeout(() => { starEl.className = 'fa-regular fa-star'; starEl.style.color = ''; }, 2000);
+  goBack() {
+    if (this.historyIndex > 0) {
+      this.historyIndex--;
+      this.navigateTo(this.history[this.historyIndex]);
     }
   },
 
-  _getDomain(url) {
-    try { return new URL(url).hostname.replace('www.', ''); } catch { return url; }
+  goForward() {
+    if (this.historyIndex < this.history.length - 1) {
+      this.historyIndex++;
+      this.navigateTo(this.history[this.historyIndex]);
+    }
   },
+
+  updateNavButtons() {
+    const backBtn = document.getElementById('br-back');
+    const forwardBtn = document.getElementById('br-forward');
+    
+    if (backBtn) backBtn.disabled = this.historyIndex <= 0;
+    if (forwardBtn) forwardBtn.disabled = this.historyIndex >= this.history.length - 1;
+  }
 };
 
-/* Expose as global alias for inline onclick compatibility */
-const Browser = window.KOSApps.browser;
-
-/* Register init hook with WM */
-WM.setOnOpen('browser', () => Browser.init());
+// Window Manager listener
+WM.setOnOpen('browser', () => window.KOSApps.browser.init());

@@ -95,22 +95,22 @@ const KOSContextMenu = (() => {
       {
         label  : 'New Folder',
         icon   : 'fa-folder-plus',
-        action : () => KOSBus.emit('kos:desktop-new-folder', {}),
+        action : () => KOSBus.dispatch('kos:desktop-new-folder', {}),
       },
       {
         label  : 'Sort Icons',
         icon   : 'fa-arrow-up-a-z',
         sub    : [
-          { label: 'By Name',      icon: 'fa-font',           action: () => KOSBus.emit('kos:sort-icons', { by: 'name' }) },
-          { label: 'By Date',      icon: 'fa-calendar',        action: () => KOSBus.emit('kos:sort-icons', { by: 'date' }) },
-          { label: 'By Kind',      icon: 'fa-layer-group',     action: () => KOSBus.emit('kos:sort-icons', { by: 'kind' }) },
+          { label: 'By Name',      icon: 'fa-font',           action: () => KOSBus.dispatch('kos:sort-icons', { by: 'name' }) },
+          { label: 'By Date',      icon: 'fa-calendar',        action: () => KOSBus.dispatch('kos:sort-icons', { by: 'date' }) },
+          { label: 'By Kind',      icon: 'fa-layer-group',     action: () => KOSBus.dispatch('kos:sort-icons', { by: 'kind' }) },
         ],
       },
       {
         label  : 'Refresh',
         icon   : 'fa-rotate-right',
         shortcut: 'F5',
-        action : () => KOSBus.emit('kos:desktop-refresh', {}),
+        action : () => KOSBus.dispatch('kos:desktop-refresh', {}),
       },
       { type: 'sep' },
       {
@@ -144,7 +144,7 @@ const KOSContextMenu = (() => {
         shortcut: '⌘Space',
         action : () => {
           if (typeof openSpotlight === 'function') openSpotlight();
-          else KOSBus.emit('kos:request-spotlight-open', {});
+          else KOSBus.dispatch('kos:request-spotlight-open', {});
         },
       },
       { type: 'sep' },
@@ -163,19 +163,19 @@ const KOSContextMenu = (() => {
         label  : 'Lock Screen',
         icon   : 'fa-lock',
         shortcut: '⌘L',
-        action : () => KOSBus.emit('kos:lock', {}),
+        action : () => KOSBus.dispatch('kos:lock', {}),
       },
       { type: 'sep' },
       {
         label  : 'Restart',
         icon   : 'fa-rotate-right',
-        action : () => KOSBus.emit('kos:restart', {}),
+        action : () => KOSBus.dispatch('kos:restart', {}),
       },
       {
         label  : 'Shut Down…',
         icon   : 'fa-power-off',
         variant: 'danger',
-        action : () => KOSBus.emit('kos:shutdown', {}),
+        action : () => KOSBus.dispatch('kos:shutdown', {}),
       },
     ];
   }

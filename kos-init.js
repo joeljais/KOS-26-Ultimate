@@ -244,10 +244,20 @@ KOSBus.on('kos:app-minimized', e => _setRunning(e.detail.appId, true));
 KOSBus.on('kos:app-closed',    e => _setRunning(e.detail.appId, false));
 
 /* ─── Boot Orchestrator ─── */
-(function init() {
+(async function init() {
   /* 0. Apply display settings first so zoom/brightness/font-size are
         set before any other UI renders, preventing a flash of unstyled UI. */
   if (typeof KOSDisplay !== 'undefined') KOSDisplay.apply();
+
+  /* 0b. Initialise the KOS Filesystem kernel.
+         Opens the unified IndexedDB, migrates legacy per-type stores,
+         and resolves KOSFS.ready so all app init() calls can proceed.
+         Must run before any app that calls KOSFS.registerApp() or
+         await KOSFS.ready (files.js, notes.js, photos.js …). */
+  if (typeof KOSFS !== 'undefined') {
+    try { await KOSFS.init(); }
+    catch (e) { console.error('[KOS Boot] KOSFS.init() failed:', e); }
+  }
 
   /* 1. Restore persisted user preferences */
   applyWallpaper(localStorage.getItem(KEY_WALLPAPER));

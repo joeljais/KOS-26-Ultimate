@@ -12,9 +12,7 @@
       navigator.serviceWorker.register('sw.js');
   </script>
 
-  <!-- ── Google Fonts — non-render-blocking (media=print swap trick) ──
-       Load fonts with media="print" so they never block first paint.
-       onload switches media to "all" once the sheet is ready.       -->
+  <!-- ── Google Fonts — non-render-blocking (media=print swap trick) ── -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="style"
@@ -33,35 +31,26 @@
   </noscript>
 
   <!-- ══════════════════════════════════════════════════════════
-       CORE STYLES  (always loaded)
-       To change variables / shell / dock / windows → edit only
-       the relevant file below.
+       CORE STYLES
   ══════════════════════════════════════════════════════════════ -->
-  <link rel="stylesheet" href="css/core-vars.css">   <!-- variables, reset, icon gradients, keyframes -->
-  <link rel="stylesheet" href="css/shell.css">        <!-- boot, login, desktop, topbar -->
-  <link rel="stylesheet" href="css/dock.css">         <!-- dock + icon palette picker -->
-  <link rel="stylesheet" href="css/wm.css">           <!-- floating windows + resize handles -->
-  <link rel="stylesheet" href="css/spotlight.css">    <!-- spotlight overlay -->
+  <link rel="stylesheet" href="css/core-vars.css">
+  <link rel="stylesheet" href="css/shell.css">
+  <link rel="stylesheet" href="css/wm.css">
 
   <!-- ══ MOBILE BLOCKER STYLES ══ -->
   <style>
-    /* Sits above everything; reuses boot-wordmark, boot-gif-wrap, boot-dots
-       classes already defined in shell.css so it looks identical to
-       the restart / boot screens. Only the extra notice text is new. */
-
     #screen-mobile-block {
       display: none;
       position: fixed;
       inset: 0;
       z-index: 99999;
-      background: #000;           /* same as your .screen bg */
+      background: #000;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       overflow: hidden;
     }
 
-    /* Animated dot row — mirrors shell.css boot-dots behaviour */
     #screen-mobile-block .boot-dots {
       display: flex;
       gap: 10px;
@@ -82,7 +71,6 @@
       40%            { opacity: 1;    transform: scale(1);   }
     }
 
-    /* Separator line between the gif/dots block and the notice */
     .mob-sep {
       width: 40px;
       height: 1px;
@@ -90,7 +78,6 @@
       margin-top: 40px;
     }
 
-    /* Notice text block */
     .mob-notice {
       margin-top: 20px;
       display: flex;
@@ -122,23 +109,10 @@
       #screen-mobile-block { display: flex; }
     }
   </style>
-
-  <!-- ══════════════════════════════════════════════════════════
-       APP STYLES  (injected lazily by kos-wm.js on first open,
-       but pre-listed here for apps that restore from session)
-       Each file is scoped to its app's window only.
-  ══════════════════════════════════════════════════════════════ -->
-  <!-- Individual app stylesheets are injected by kos-wm.js when an app
-       is first launched. You do NOT need to add <link> tags here for
-       new apps — just set cssPath in kos-manifest.js. -->
-
 </head>
 <body>
 
-  <!-- ══ MOBILE BLOCKER ══
-       Intentionally mirrors the restart / boot screen layout:
-       wordmark → gif → dots → notice text.
-  ══ -->
+  <!-- ══ MOBILE BLOCKER ══ -->
   <div id="screen-mobile-block" role="alert" aria-live="polite">
     <div class="boot-wordmark">KOS</div>
     <div class="boot-gif-wrap">
@@ -206,7 +180,6 @@
 
   <!-- ══ DESKTOP ══ -->
   <div class="screen" id="screen-desktop">
-
     <div class="wallpaper" id="wallpaperEl"></div>
 
     <!-- Topbar -->
@@ -267,7 +240,7 @@
     <!-- Dock hover trigger zone -->
     <div id="dock-trigger-zone"></div>
 
-    <!-- Dock — populated by apps/dock.js via AppManifest -->
+    <!-- Dock -->
     <div class="dock glass" id="dock">
       <div class="dock-spotlight dock-item" onclick="openSpotlight()" title="Spotlight">
         <div class="app-icon icon-spotlight"><i class="fa-solid fa-magnifying-glass"></i></div>
@@ -279,40 +252,23 @@
 
     <!-- Toast notification -->
     <div id="kos-toast"></div>
-
-  </div><!-- end screen-desktop -->
+  </div>
 
   <!-- Hidden file inputs -->
-  <input type="file" id="wallpaperFileInput" accept="image/*" style="display:none"
-         onchange="handleWallpaperUpload(event)">
-  <input type="file" id="avatarFileInput"    accept="image/*" style="display:none"
-         onchange="handleAvatarUpload(event)">
-
+  <input type="file" id="wallpaperFileInput" accept="image/*" style="display:none" onchange="handleWallpaperUpload(event)">
+  <input type="file" id="avatarFileInput"    accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
 
   <!-- ══════════════════════════════════════════════════════════
-       SCRIPT LOADING ORDER  — do not reorder these
-
-       1. kos-manifest.js   — AppManifest array (no dependencies)
-       2. kos-kernel.js     — core utilities    (needs manifest for nothing, but defines KOSBus)
-       3. kos-wm.js         — window manager    (needs KOSBus + AppManifest)
-       4. apps/dock.js      — dock module       (needs WM + KOSBus + AppManifest)
-       5. apps/spotlight.js — spotlight         (needs WM + KOSBus + AppManifest)
-       6. app modules       — each registers itself with WM.setOnOpen()
-       7. kos-init.js       — boot orchestrator (runs after everything is ready)
+       SCRIPT LOADING ORDER
   ══════════════════════════════════════════════════════════════ -->
   <script defer src="kos-manifest.js"></script>
   <script defer src="kos-kernel.js"></script>
+  <script defer src="kos-fs.js"></script>
+  <script defer src="kos-fs-picker.js"></script>
+  <script defer src="kos-contextmenu.js"></script>
   <script defer src="kos-wm.js"></script>
 
-  <!-- System UI modules -->
-  <script defer src="apps/dock.js"></script>
-  <script defer src="apps/spotlight.js"></script>
-
-  <!-- ── App modules ──
-       Each file calls WM.setOnOpen(id, fn) to register its init hook.
-       TO ADD A NEW APP: add one line here + one entry in kos-manifest.js.
-       Nothing else changes.
-  ── -->
+  <!-- App modules -->
   <script defer src="apps/browser.js"></script>
   <script defer src="apps/ui-manager.js"></script>
   <script defer src="apps/task-mgr.js"></script>
@@ -322,12 +278,12 @@
   <script defer src="apps/about.js"></script>
   <script defer src="apps/release-notes.js"></script>
   <script defer src="apps/files.js"></script>
- <script defer src="apps/notes.js"></script>
- <script defer src="terminal.js"></script>
-  <!-- Display manager — must come after app modules, before kos-init -->
-  <script defer src="kos-display.js"></script>
-  <!-- Boot orchestrator — must be last -->
-  <script defer src="kos-init.js"></script>
+  <script defer src="apps/notes.js"></script>
+  <script defer src="apps/music.js"></script> <!-- REGISTERED MUSIC APP MODULE LINK HERE -->
+  <script defer src="terminal.js"></script>
 
+  <!-- Boot orchestrator -->
+  <script defer src="kos-display.js"></script>
+  <script defer src="kos-init.js"></script>
 </body>
 </html>

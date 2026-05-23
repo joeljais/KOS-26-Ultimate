@@ -1,284 +1,110 @@
-/* ══════════════════════════════════════════════════════════════
-   KOS ULTIMATE 2026 — css/apps/browser.css
-   Fixes:
-     • Normal-mode toolbar layout (traffic-lights no longer
-       inside tabstrip flow — WM owns them separately)
-     • Maximize mode: tabs always visible, no layout collapse
-     • Dark mode: syncs with body.dark (set by KOS theme toggle)
-   ══════════════════════════════════════════════════════════════ */
+/* Custom variables matching system themes */
+:root {
+  --bg-blur: blur(20px) saturate(160%);
+  --border-radius: 12px;
+  
+  /* Light Mode Liquid Glass Defaults */
+  --glass-bg: rgba(255, 255, 255, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-glow: 0 8px 32px 0 rgba(31, 38, 135, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+  --chrome-text: #202124;
+  --input-bg: rgba(255, 255, 255, 0.6);
+}
 
-/* ── Window shell ── */
-.browser-window {
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Dark Mode Liquid Glass Defaults */
+    --glass-bg: rgba(20, 20, 25, 0.45);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --glass-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+    --chrome-text: #e8eaed;
+    --input-bg: rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* Chrome Core Layout with Liquid Glass Theme */
+.chrome-container {
   display: flex;
   flex-direction: column;
-  overflow: visible !important;
-  background: #dee1e6 !important;
-  border: 1px solid rgba(0, 0, 0, 0.18) !important;
-}
-
-/* ══════════════════════════════════════════
-   TAB STRIP
-   • Traffic lights are rendered by the WM
-     OUTSIDE this strip — we must NOT flex
-     against them inside .br-tabstrip.
-   • In maximized mode the WM moves traffic
-     lights to the topbar; the strip stays
-     intact because it owns its own layout.
-   ══════════════════════════════════════════ */
-.br-tabstrip {
-  display: flex;
-  align-items: stretch;
-  background: linear-gradient(to bottom, #dee1e6, #cdd0d5);
-  border-bottom: 1px solid #b8bcc4;
-  padding: 0;
-  height: 40px;
-  min-height: 40px;
-  flex-shrink: 0;
+  width: 100%;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow: hidden;
-  /* Push tabs past the WM traffic lights (approx 72px) in normal mode */
-  padding-left: 76px;
 }
 
-/* In maximized mode the WM adds .maximized to the window element;
-   traffic lights are gone so we reclaim that space. */
-#win-browser.maximized .br-tabstrip {
-  padding-left: 8px;
-}
-
-/* ── Tab row — fills remaining strip width ── */
-.br-tabs-row {
-  display: flex;
-  align-items: stretch;
-  flex: 1;
-  overflow: hidden;
-  gap: 0;
-  padding-top: 6px;
-  min-width: 0;
-}
-
-/* ── Individual tab ── */
-.br-tab {
+/* Chrome Top Bar Control Center */
+.chrome-navbar {
+  background: var(--glass-bg);
+  backdrop-filter: var(--bg-blur);
+  -webkit-backdrop-filter: var(--bg-blur);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: var(--glass-glow);
+  padding: 8px 12px;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 0 10px;
-  min-width: 100px;
-  max-width: 200px;
+  gap: 10px;
+}
+
+.chrome-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.chrome-btn {
   background: transparent;
-  border-radius: 8px 8px 0 0;
-  cursor: pointer;
-  font-size: 0.78rem;
-  font-weight: 500;
-  color: #555;
-  border: 1px solid transparent;
-  border-bottom: none;
-  transition: background 0.15s, color 0.15s;
-  flex-shrink: 1;
-  overflow: hidden;
-  position: relative;
-  margin-top: 2px;
-  user-select: none;
-}
-.br-tab:hover  { background: rgba(255, 255, 255, 0.45); color: #222; }
-.br-tab.active {
-  background: #f1f3f4;
-  color: #202124;
-  border-color: #c0c4cc;
-  border-bottom: 1px solid #f1f3f4;
-  z-index: 2;
-}
-
-.br-favicon   { width: 14px; height: 14px; flex-shrink: 0; object-fit: contain; }
-.br-tab-title { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-.br-tab-x {
-  flex-shrink: 0;
-  width: 18px; height: 18px;
-  border-radius: 50%;
-  background: none; border: none;
-  cursor: pointer;
-  font-size: 0.9rem; font-weight: 700;
-  color: #888;
-  display: flex; align-items: center; justify-content: center;
-  transition: background 0.15s, color 0.15s;
-  opacity: 0;
-  line-height: 1;
-}
-.br-tab:hover .br-tab-x,
-.br-tab.active .br-tab-x { opacity: 1; }
-.br-tab-x:hover { background: rgba(0, 0, 0, 0.12); color: #333; }
-
-/* ── New-tab button ── */
-.br-newtab-btn {
-  flex-shrink: 0;
-  width: 28px; height: 28px;
-  align-self: center;
-  border-radius: 50%;
-  background: none; border: none;
-  cursor: pointer;
-  font-size: 1.15rem; font-weight: 400;
-  color: #666;
-  display: flex; align-items: center; justify-content: center;
-  transition: background 0.15s, color 0.15s;
-  margin: 0 4px;
-}
-.br-newtab-btn:hover { background: rgba(0, 0, 0, 0.1); color: #111; }
-
-/* ══════════════════════════════════════════
-   NAVIGATION TOOLBAR
-   ══════════════════════════════════════════ */
-.br-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 6px 10px;
-  background: #f1f3f4;
-  border-bottom: 1px solid #dfe1e5;
-  flex-shrink: 0;
-}
-
-/* Nav icon buttons */
-.br-nav-btn {
-  flex-shrink: 0;
-  width: 30px; height: 30px;
-  border-radius: 50%;
   border: none;
-  background: none;
+  color: var(--chrome-text);
+  font-size: 14px;
   cursor: pointer;
-  color: #5f6368;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.82rem;
-  transition: background 0.15s, color 0.15s;
-}
-.br-nav-btn:hover:not(:disabled) { background: rgba(0, 0, 0, 0.08); color: #202124; }
-.br-nav-btn:disabled { opacity: 0.35; cursor: default; }
-
-/* URL bar */
-.br-urlbar {
-  flex: 1;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  gap: 6px;
-  background: #fff;
-  border-radius: 24px;
-  border: 1.5px solid #dfe1e5;
-  padding: 0 12px;
-  height: 32px;
-  margin: 0 4px;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  min-width: 0;
-}
-.br-urlbar:focus-within {
-  border-color: #4285f4;
-  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.18);
+  justify-content: center;
+  transition: background 0.2s;
 }
 
-.br-lock-icon          { font-size: 0.72rem; flex-shrink: 0; }
-.br-lock-icon.secure   { color: #188038; }
-.br-lock-icon.insecure { color: #c5221f; }
-
-.br-url-input {
-  flex: 1;
-  min-width: 0;
-  background: none; border: none; outline: none;
-  font-size: 0.84rem;
-  font-family: 'Outfit', sans-serif;
-  color: #202124;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+.chrome-btn:hover {
+  background: var(--input-bg);
 }
-.br-url-input::placeholder { color: #9aa0a6; }
 
-.br-urlbar-btn {
-  flex-shrink: 0;
-  background: none; border: none;
-  cursor: pointer;
-  font-size: 0.85rem;
-  color: #9aa0a6;
-  display: flex; align-items: center;
-  padding: 0;
-  transition: color 0.15s;
+/* Omnibox (URL Bar) */
+.chrome-omnibox {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  background: var(--input-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 4px 14px;
+  color: var(--chrome-text);
 }
-.br-urlbar-btn:hover { color: #5f6368; }
 
-/* ── Progress bar ── */
-.br-progress-bar {
-  height: 3px;
+.chrome-omnibox i {
+  margin-right: 8px;
+  opacity: 0.7;
+}
+
+.chrome-input {
   background: transparent;
-  flex-shrink: 0;
-  position: relative;
-  overflow: hidden;
-}
-.br-progress-bar.loading::after {
-  content: '';
-  position: absolute; top: 0; left: -40%; width: 40%; height: 100%;
-  background: linear-gradient(to right, transparent, #4285f4, transparent);
-  animation: br-progress 1.2s ease-in-out infinite;
-}
-@keyframes br-progress { to { left: 140%; } }
-
-/* ── Content shell + iframe ── */
-.br-shell {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  overflow: hidden;
-  min-height: 0;
-  border-radius: 0 0 13px 13px;
-}
-
-.br-frame {
-  flex: 1;
   border: none;
-  background: #fff;
-  min-height: 0;
-  border-radius: 0 0 13px 13px;
+  outline: none;
+  width: 100%;
+  color: var(--chrome-text);
+  font-size: 13px;
 }
 
-/* ══════════════════════════════════════════
-   DARK MODE  — syncs with body.dark
-   ══════════════════════════════════════════ */
-body.dark .browser-window {
-  background: #2c2c2e !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
+/* Viewport Area */
+.chrome-content {
+  flex-grow: 1;
+  background: transparent;
+  position: relative;
 }
 
-body.dark .br-tabstrip {
-  background: linear-gradient(to bottom, #2c2c2e, #242426);
-  border-bottom-color: #1a1a1c;
+.chrome-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #ffffff; /* Default background for web contents */
 }
-
-body.dark .br-tab            { color: #9aa0a6; }
-body.dark .br-tab:hover      { background: rgba(255, 255, 255, 0.07); color: #e8eaed; }
-body.dark .br-tab.active     {
-  background: #1e1e20;
-  color: #e8eaed;
-  border-color: #3a3a3c;
-  border-bottom-color: #1e1e20;
-}
-
-body.dark .br-tab-x          { color: #666; }
-body.dark .br-tab-x:hover    { background: rgba(255, 255, 255, 0.12); color: #e8eaed; }
-
-body.dark .br-newtab-btn     { color: #9aa0a6; }
-body.dark .br-newtab-btn:hover { background: rgba(255, 255, 255, 0.1); color: #e8eaed; }
-
-body.dark .br-toolbar        { background: #1e1e20; border-bottom-color: #333; }
-body.dark .br-nav-btn        { color: #9aa0a6; }
-body.dark .br-nav-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.1); color: #e8eaed; }
-
-body.dark .br-urlbar {
-  background: #2a2a2c;
-  border-color: #4a4a4e;
-}
-body.dark .br-urlbar:focus-within {
-  border-color: #8ab4f8;
-  box-shadow: 0 0 0 2px rgba(138, 180, 248, 0.2);
-}
-
-body.dark .br-url-input      { color: #e8eaed; }
-body.dark .br-url-input::placeholder { color: #666; }
-
-body.dark .br-urlbar-btn     { color: #666; }
-body.dark .br-urlbar-btn:hover { color: #9aa0a6; }
-
-body.dark .br-frame          { background: #1e1e20; }

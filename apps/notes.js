@@ -268,3 +268,11 @@ const NotesApp = {
 };
 
 window.KOSApps.notes = NotesApp;
+
+/* ── WM registration ─────────────────────────────────────
+   setOnOpen must be called at script-load time (before any
+   WM.launch()) so the hook is in _pendingOnOpen when the
+   window is built on first launch. */
+if (typeof WM !== 'undefined') {
+  WM.setOnOpen('notes', () => window.KOSApps.notes.init());
+}

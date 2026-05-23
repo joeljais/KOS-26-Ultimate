@@ -1,0 +1,413 @@
+/* ==========================================================================
+   KOS ULTIMATE 2026 — apps/music.css
+   Liquid Glass Spotify-Inspired Music Engine UI
+   ========================================================================== */
+
+.mu-app {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  grid-template-rows: 1fr 90px;
+  height: 100%;
+  width: 100%;
+  background: rgba(18, 18, 18, 0.7);
+  backdrop-filter: blur(30px) saturate(150%);
+  -webkit-backdrop-filter: blur(30px) saturate(150%);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #ffffff;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Sidebar Styling */
+.mu-sidebar {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.mu-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: #1ed760; /* Spotify Green Accent */
+}
+
+.mu-nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mu-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 12px;
+  color: #b3b3b3;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.mu-nav-item:hover, .mu-nav-item.active {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mu-nav-item.active {
+  background: rgba(30, 215, 96, 0.15);
+  color: #1ed760;
+}
+
+/* Main Display Workspace */
+.mu-main-view {
+  display: grid;
+  grid-template-rows: 70px 1fr;
+  overflow: hidden;
+  background: linear-gradient(to bottom, rgba(30, 215, 96, 0.1), transparent 40%);
+}
+
+.mu-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+}
+
+.mu-search-wrapper {
+  position: relative;
+  width: 300px;
+}
+
+.mu-search-wrapper input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid transparent;
+  padding: 8px 12px 8px 36px;
+  border-radius: 50px;
+  color: #ffffff;
+  font-size: 13px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.mu-search-wrapper input:focus {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.mu-search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #b3b3b3;
+  font-size: 13px;
+}
+
+.mu-btn-import {
+  background: #ffffff;
+  color: #000000;
+  border: none;
+  padding: 8px 24px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.mu-btn-import:hover {
+  transform: scale(1.04);
+  background: #f6f6f6;
+}
+
+/* Scrollable Track Content */
+.mu-content-scroll {
+  padding: 0 32px 32px 32px;
+  overflow-y: auto;
+}
+
+.mu-view-header {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+/* Music Playlist / Track List Table CSS */
+.mu-track-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.mu-th-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #b3b3b3;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.mu-th-row th {
+  padding: 8px 16px;
+  font-weight: 400;
+}
+
+.mu-track-row {
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.mu-track-row:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.mu-track-row.playing {
+  color: #1ed760;
+}
+
+.mu-track-row.playing .mu-track-title {
+  color: #1ed760;
+}
+
+.mu-track-row td {
+  padding: 12px 16px;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.mu-track-meta-col {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.mu-track-icon-box {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #b3b3b3;
+}
+
+.mu-track-row.playing .mu-track-icon-box {
+  color: #1ed760;
+}
+
+.mu-track-title {
+  font-weight: 500;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 280px;
+}
+
+.mu-track-action-btn {
+  background: transparent;
+  border: none;
+  color: #b3b3b3;
+  cursor: pointer;
+  padding: 6px;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.mu-track-action-btn:hover {
+  color: #e81123;
+}
+
+/* Persistent Player Bottom Control Deck Bar */
+.mu-player-deck {
+  grid-column: 1 / span 2;
+  background: #181818;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.mu-deck-now-playing {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.mu-deck-thumb {
+  width: 56px;
+  height: 56px;
+  background: #282828;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #1ed760;
+}
+
+.mu-deck-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 180px;
+}
+
+.mu-deck-track-name {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mu-deck-artist {
+  font-size: 11px;
+  color: #b3b3b3;
+}
+
+.mu-deck-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.mu-control-buttons {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.mu-btn-circ {
+  background: #ffffff;
+  color: #000000;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  transition: transform 0.2s;
+}
+
+.mu-btn-circ:hover {
+  transform: scale(1.06);
+}
+
+.mu-btn-flat {
+  background: transparent;
+  border: none;
+  color: #b3b3b3;
+  cursor: pointer;
+  font-size: 16px;
+  transition: color 0.2s;
+}
+
+.mu-btn-flat:hover, .mu-btn-flat.active {
+  color: #ffffff;
+}
+.mu-btn-flat.active { color: #1ed760; }
+
+.mu-timeline-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 500px;
+  font-size: 11px;
+  color: #b3b3b3;
+}
+
+.mu-progress-bar {
+  flex-index: 1;
+  width: 100%;
+  height: 4px;
+  background: #404040;
+  border-radius: 2px;
+  position: relative;
+  cursor: pointer;
+}
+
+.mu-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: #1ed760;
+  border-radius: 2px;
+}
+
+.mu-deck-right-utilities {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  color: #b3b3b3;
+}
+
+.mu-volume-slider {
+  width: 100px;
+  height: 4px;
+  background: #404040;
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+}
+
+/* Integrated Dialog Modal inside Player Layout Context */
+.mu-modal-overlay {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 999; opacity: 0; pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.mu-modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+.mu-dialog-box {
+  background: #282828;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px; width: 360px; padding: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  text-align: center;
+}
+.mu-dialog-buttons {
+  display: flex; justify-content: center; gap: 12px; margin-top: 20px;
+}
+.mu-dialog-btn {
+  padding: 8px 20px; border-radius: 20px; font-weight: 600; cursor: pointer; border: none; font-size: 13px;
+}
+.mu-btn-confirm { background: #1ed760; color: #fff; }
+.mu-btn-cancel { background: transparent; color: #b3b3b3; border: 1px solid #b3b3b3; }
+
+/* In-App Toast Module styling */
+.mu-toast {
+  position: absolute; bottom: 105px; left: 50%; transform: translateX(-50%) translateY(10px);
+  background: #1ed760; color: #000000; padding: 8px 24px; font-weight: 600;
+  border-radius: 50px; font-size: 13px; opacity: 0; transition: all 0.2s ease; z-index: 1000; pointer-events: none;
+}
+.mu-toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* Processing/Empty visual fallbacks */
+.mu-empty-state {
+  display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 60px 0; color: #b3b3b3;
+}

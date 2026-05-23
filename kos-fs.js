@@ -413,7 +413,7 @@ window.KOSFS = (() => {
       writtenBy : appId,
     });
 
-    KOSBus.emit('kos:fs-write', { id, type: fileType, name, size, writtenBy: appId });
+    KOSBus.dispatch('kos:fs-write', { id, type: fileType, name, size, writtenBy: appId });
     return id;
   }
 
@@ -548,7 +548,7 @@ window.KOSFS = (() => {
     _guard(appId, record.type);
 
     await _p(_store('readwrite').delete(Number(fileId)));
-    KOSBus.emit('kos:fs-delete', {
+    KOSBus.dispatch('kos:fs-delete', {
       id        : fileId,
       type      : record.type,
       name      : record.name,
@@ -585,7 +585,7 @@ window.KOSFS = (() => {
     const updated = { ...record, ...safe, modifiedAt: Date.now() };
     await _p(_store('readwrite').put(updated));
 
-    KOSBus.emit('kos:fs-update', {
+    KOSBus.dispatch('kos:fs-update', {
       id        : fileId,
       type      : record.type,
       patch     : safe,
@@ -699,7 +699,7 @@ window.KOSFS = (() => {
       _db = await _openDB();
       await _migrate();
       _readyResolve();
-      KOSBus.emit('kos:fs-ready', {});
+      KOSBus.dispatch('kos:fs-ready', {});
       console.info('[KOSFS] Filesystem ready.');
     } catch (err) {
       _readyReject(err);
