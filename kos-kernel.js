@@ -15,6 +15,8 @@ const KEY_SESSION           = 'kos-session';
 const KEY_ICON_PALETTE      = 'kos-icon-palette';
 const KEY_SYS_OVERRIDES     = 'kos-sys-overrides';
 const KEY_GLASS             = 'kos-glass';  /* 'on' | 'off' */
+const KEY_PASSWORD          = 'kos-password';      /* custom password override (terminal: passwd) */
+const KEY_NO_PASSWORD       = 'kos-no-password';   /* 'true' → skip login screen (terminal: passwd --nopass) */
 
 /* ─── 2. GLOBAL EVENT BUS ───────────────────────────────────────
    All cross-module communication goes through here.
@@ -345,19 +347,28 @@ function buildAvatarSection() {
 const screens = {};
 document.querySelectorAll('.screen').forEach(s => screens[s.id] = s);
 const passwordBox = document.getElementById('passwordBox');
-const PASSWORD = 'kosul';
+
+/** Returns the active password — custom override from terminal, or the default. */
+function _getPassword() {
+  return localStorage.getItem(KEY_PASSWORD) || 'kosul';
+}
+
+/** True when auto-login is enabled (passwd --nopass was used in terminal). */
+function _isNoPassword() {
+  return localStorage.getItem(KEY_NO_PASSWORD) === 'true';
+}
 
 function showOnly(id) {
   Object.values(screens).forEach(s => s.classList.remove('active'));
   if (id && screens[id]) {
     screens[id].classList.add('active');
-    if (id === 'screen-login') setTimeout(() => passwordBox.focus(), 100);
+    if (id === 'screen-login') setTimeout(() => passwordBox?.focus(), 100);
   }
 }
 
 /* ─── 10. LOGIN ─── */
 function attemptLogin() {
-  if (passwordBox.value === PASSWORD) {
+  if (passwordBox.value === _getPassword()) {
     showOnly('screen-desktop');
     if (window.WM) WM.restoreSession();
   } else {
@@ -365,14 +376,24 @@ function attemptLogin() {
     setTimeout(() => { passwordBox.classList.remove('shake'); passwordBox.value = ''; }, 500);
   }
 }
-passwordBox.addEventListener('input', () => { if (passwordBox.value === PASSWORD) attemptLogin(); });
+/* Live-check while typing so fast typers don't need to press Enter */
+passwordBox.addEventListener('input', () => {
+  if (passwordBox.value === _getPassword()) attemptLogin();
+});
 
 /* ─── 11. POWER ─── */
 function triggerSleep()   { showOnly('screen-sleep'); }
 function triggerRestart() {
   if (window.WM) WM.clearSession();
   showOnly('screen-restart');
-  setTimeout(() => showOnly('screen-login'), 3000);
+  setTimeout(() => {
+    if (_isNoPassword()) {
+      showOnly('screen-desktop');
+      if (window.WM) WM.restoreSession();
+    } else {
+      showOnly('screen-login');
+    }
+  }, 3000);
 }
 function triggerShutdown() {
   if (window.WM) WM.clearSession();
@@ -461,7 +482,16 @@ function applySysOverride(appId) {
 }
 
 /* ─── 16. BOOT SEQUENCE ─── */
-setTimeout(() => showOnly('screen-login'), 4000);
+setTimeout(() => {
+  if (_isNoPassword()) {
+    /* Auto-login is enabled (set via terminal: passwd --nopass).
+       Skip the login screen entirely and go straight to the desktop. */
+    showOnly('screen-desktop');
+    if (window.WM) WM.restoreSession();
+  } else {
+    showOnly('screen-login');
+  }
+}, 4000);
 
 /* ─── 17. APPLY PERSISTED SETTINGS AT STARTUP ─── */
 applyTheme(localStorage.getItem(KEY_THEME) || 'light');

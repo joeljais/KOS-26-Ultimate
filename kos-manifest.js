@@ -227,11 +227,15 @@ const AppManifest = [
     name      : 'Videos',
     iconClass : 'icon-videos',
     faIcon    : 'fa-film',
-    jsPath    : null,
-    cssPath   : null,
+    jsPath    : 'apps/videos.js',              // Linked code module script target
+    cssPath   : 'css/apps/videos.css',          // Linked layout styling rules
     permissions: ['videos', 'audios'],
     metadata: { showInDock: true, searchable: true, isSystemApp: false },
-    initData: null,
+    initData: {
+      ...winSize(64, [16, 9]),                 // Fluid canvas responsive design footprints
+      ratio: [16, 9], size: 64,
+      offset: 35, bodyId: 'videos-body',
+    },
   },
 
   {

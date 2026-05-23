@@ -205,7 +205,7 @@ const RELEASES = [
 
 window.KOSApps.releasenotes = {
   init() {
-    const body = document.querySelector('.rn-body') || document.getElementById('rn-body');
+    const body = document.getElementById('releasenotes-body');
     if (!body) return;
 
     const [latest, ...older] = RELEASES;
